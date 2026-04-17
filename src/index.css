@@ -49,6 +49,20 @@
     --era-pre: 230 18% 60%;
     --era-post: 326 90% 58%;            /* neon magenta accent */
 
+    /* Status palette (coverage) */
+    --status-comprehensive: 152 62% 42%;  /* green */
+    --status-partial: 38 95% 55%;         /* amber */
+    --status-none: 358 78% 58%;           /* red */
+    --status-treaty: 210 80% 55%;         /* blue */
+
+    /* Treaty palette */
+    --treaty-conv108: 210 75% 52%;
+    --treaty-conv108plus: 220 80% 42%;
+    --treaty-malabo: 36 92% 50%;
+    --treaty-gpa: 326 80% 56%;
+    --treaty-gpen: 280 65% 55%;
+    --treaty-oecd: 178 62% 42%;
+
     /* Map */
     --map-empty: 42 18% 82%;
     --map-stroke: 42 20% 70%;
