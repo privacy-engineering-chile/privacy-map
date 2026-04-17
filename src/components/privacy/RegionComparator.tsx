@@ -13,7 +13,12 @@ export const RegionComparator = ({ data }: { data: Jurisdiction[] }) => {
     return years.map((y) => {
       const row: any = { year: y };
       regions.forEach((r) => {
-        const count = data.filter((d) => d.region === r && (mode === "cum" ? d.year <= y : d.year === y)).length;
+        const count = data.filter(
+          (d) =>
+            d.region === r &&
+            d.year != null &&
+            (mode === "cum" ? d.year <= y : d.year === y),
+        ).length;
         row[r] = count;
       });
       return row;

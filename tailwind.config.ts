@@ -40,6 +40,12 @@ export default {
           pre: "hsl(var(--era-pre))",
           post: "hsl(var(--era-post))",
         },
+        status: {
+          comprehensive: "hsl(var(--status-comprehensive))",
+          partial: "hsl(var(--status-partial))",
+          none: "hsl(var(--status-none))",
+          treaty: "hsl(var(--status-treaty))",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
