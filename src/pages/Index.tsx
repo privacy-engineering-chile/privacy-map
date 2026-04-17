@@ -13,10 +13,13 @@ import { JurisdictionsTable } from "@/components/privacy/JurisdictionsTable";
 import { ExportButtons } from "@/components/privacy/ExportButtons";
 import { TreatyMatrix } from "@/components/privacy/TreatyMatrix";
 import { TreatyRegionStacks } from "@/components/privacy/TreatyRegionStacks";
+import { RegionTreatySankey } from "@/components/privacy/RegionTreatySankey";
 import { LawMaturityScatter } from "@/components/privacy/LawMaturityScatter";
 import { DevelopmentEquity } from "@/components/privacy/DevelopmentEquity";
 import { BlocExplorer } from "@/components/privacy/BlocExplorer";
 import { ChapterHeading } from "@/components/privacy/ChapterHeading";
+import { AdoptionPlayback } from "@/components/privacy/AdoptionPlayback";
+import { CountryComparator } from "@/components/privacy/CountryComparator";
 
 const Index = () => {
   const { filters, setFilters, filtered, reset } = useFilters();
@@ -93,6 +96,9 @@ const Index = () => {
             <TreatyMatrix data={filtered} onSelect={setSelected} />
             <TreatyRegionStacks data={filtered} />
           </div>
+          <div className="mt-6">
+            <RegionTreatySankey data={filtered} />
+          </div>
         </section>
 
         {/* CHAPTER 3 — Maturity & evolution */}
@@ -103,6 +109,9 @@ const Index = () => {
             lead="De la primera ley a la ley vigente: ¿quién modernizó su marco y quién se quedó atrás?"
             accent="text-accent"
           />
+          <div className="mb-6">
+            <AdoptionPlayback data={filtered} />
+          </div>
           <div className="grid lg:grid-cols-2 gap-6">
             <LawMaturityScatter data={filtered} onSelect={setSelected} />
             <RegionComparator data={filtered} />
@@ -138,6 +147,9 @@ const Index = () => {
             lead="Explora, ordena y exporta el dataset filtrado."
             accent="text-primary"
           />
+          <div className="mb-6">
+            <CountryComparator onSelect={setSelected} />
+          </div>
           <JurisdictionsTable data={filtered} onSelect={setSelected} />
         </section>
 
