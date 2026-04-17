@@ -1,10 +1,24 @@
-import { Jurisdiction, MILESTONES, REGION_COLORS, YEAR_MAX, YEAR_MIN } from "@/data/jurisdictions";
+import { Jurisdiction, REGION_COLORS, YEAR_MAX, YEAR_MIN } from "@/data/jurisdictions";
 import { Card } from "@/components/ui/card";
 
-export const MilestonesTimeline = ({ data, onSelect }: { data: Jurisdiction[]; onSelect: (j: Jurisdiction) => void }) => {
+const MILESTONES = [
+  { year: 1981, label: "Convention 108" },
+  { year: 1995, label: "EU Directive 95/46" },
+  { year: 2018, label: "GDPR" },
+  { year: 2020, label: "CCPA in force" },
+];
+
+export const MilestonesTimeline = ({
+  data,
+  onSelect,
+}: {
+  data: Jurisdiction[];
+  onSelect: (j: Jurisdiction) => void;
+}) => {
   const span = YEAR_MAX - YEAR_MIN;
   const grouped = new Map<number, Jurisdiction[]>();
   data.forEach((d) => {
+    if (!d.year) return;
     const arr = grouped.get(d.year) ?? [];
     arr.push(d);
     grouped.set(d.year, arr);
@@ -13,13 +27,13 @@ export const MilestonesTimeline = ({ data, onSelect }: { data: Jurisdiction[]; o
   return (
     <Card className="p-5 shadow-soft">
       <h3 className="font-display text-2xl mb-1">Línea del tiempo</h3>
-      <p className="text-xs text-muted-foreground mb-6">{YEAR_MIN}–{YEAR_MAX} · cada punto = una jurisdicción · color por región</p>
+      <p className="text-xs text-muted-foreground mb-6">
+        {YEAR_MIN}–{YEAR_MAX} · cada punto = una jurisdicción · color por región
+      </p>
 
       <div className="relative h-48">
-        {/* base axis */}
         <div className="absolute left-0 right-0 top-1/2 h-0.5 bg-border" />
 
-        {/* milestones */}
         {MILESTONES.map((m) => {
           const x = ((m.year - YEAR_MIN) / span) * 100;
           return (
@@ -28,12 +42,13 @@ export const MilestonesTimeline = ({ data, onSelect }: { data: Jurisdiction[]; o
                 {m.label}
               </div>
               <div className="absolute top-4 bottom-4 w-px border-l border-dashed border-accent/60 -translate-x-1/2" />
-              <div className="absolute bottom-0 -translate-x-1/2 text-[10px] tabular-nums text-accent font-bold">{m.year}</div>
+              <div className="absolute bottom-0 -translate-x-1/2 text-[10px] tabular-nums text-accent font-bold">
+                {m.year}
+              </div>
             </div>
           );
         })}
 
-        {/* points */}
         {Array.from(grouped.entries()).map(([year, list]) => {
           const x = ((year - YEAR_MIN) / span) * 100;
           return list.map((j, idx) => {
