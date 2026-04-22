@@ -58,7 +58,7 @@ export const RotatingStat = () => {
 
   return (
     <p
-      className="mt-5 text-base md:text-lg text-muted-foreground max-w-2xl text-balance min-h-[3.5rem] transition-opacity duration-300"
+      className="mt-5 text-lg md:text-xl text-muted-foreground max-w-2xl text-balance min-h-[4rem] transition-opacity duration-300"
       style={{ opacity: visible ? 1 : 0 }}
       key={idx}
       aria-live="polite"
