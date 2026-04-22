@@ -82,6 +82,17 @@ const Index = () => {
           <div className="mt-8">
             <KPICards />
           </div>
+
+          <button
+            onClick={() =>
+              document.querySelector("main")?.scrollIntoView({ behavior: "smooth", block: "start" })
+            }
+            className="mt-10 mx-auto flex flex-col items-center gap-1 text-xs uppercase tracking-[0.25em] text-muted-foreground hover:text-accent transition-colors group"
+            aria-label={t("hero.scrollcue")}
+          >
+            <span>{t("hero.scrollcue")}</span>
+            <ChevronDown className="h-4 w-4 animate-bounce group-hover:text-accent" />
+          </button>
         </div>
       </header>
 
