@@ -8,7 +8,7 @@ import { CountryDetailDrawer } from "@/components/privacy/CountryDetailDrawer";
 import { RegionComparator } from "@/components/privacy/RegionComparator";
 import { RegionRanking } from "@/components/privacy/RegionRanking";
 import { JurisdictionsTable } from "@/components/privacy/JurisdictionsTable";
-import { ExportButtons } from "@/components/privacy/ExportButtons";
+
 import { TreatyMatrix } from "@/components/privacy/TreatyMatrix";
 import { TreatyRegionStacks } from "@/components/privacy/TreatyRegionStacks";
 import { RegionTreatySankey } from "@/components/privacy/RegionTreatySankey";
@@ -57,10 +57,9 @@ const Index = () => {
             <ThemeToggle />
             <LanguageToggle />
             <PrivacyBadge />
-            <ExportButtons mapRef={mapRef} />
           </div>
 
-          <div className="grid lg:grid-cols-[1fr_320px] gap-8 items-start">
+          <div className="grid lg:grid-cols-[1fr_320px] gap-8 items-center">
             <div className="animate-fade-up">
               <div className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.25em] text-accent font-bold mb-4">
                 <span className="h-2 w-2 rounded-full bg-accent animate-pulse" /> {t("hero.eyebrow")}
@@ -73,17 +72,19 @@ const Index = () => {
               </p>
               <RotatingStat />
             </div>
-            <div className="lg:pt-8">
-              <YourCountryCard onSelect={setSelected} />
+            <div className="flex justify-center lg:justify-start">
+              <div className="w-full max-w-[300px]">
+                <YourCountryCard onSelect={setSelected} />
+              </div>
             </div>
           </div>
 
           <div className="mt-10">
-            <HeroAdoptionGlobe total={JURISDICTIONS.length} />
+            <KPICards />
           </div>
 
           <div className="mt-8">
-            <KPICards />
+            <HeroAdoptionGlobe total={JURISDICTIONS.length} />
           </div>
 
           <button
