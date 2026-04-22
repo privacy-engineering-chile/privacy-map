@@ -22,7 +22,7 @@ import { AdoptionPlayback } from "@/components/privacy/AdoptionPlayback";
 import { CountryComparator } from "@/components/privacy/CountryComparator";
 import { HeroGlobeSwitcher } from "@/components/privacy/HeroGlobeSwitcher";
 import { YourCountryCard } from "@/components/privacy/YourCountryCard";
-import { IsoRegionStacks } from "@/components/privacy/IsoRegionStacks";
+
 
 import { TravelRiskTool } from "@/components/privacy/TravelRiskTool";
 import { ThemeToggle } from "@/components/privacy/ThemeToggle";
@@ -158,9 +158,6 @@ const Index = () => {
           <div className="grid lg:grid-cols-2 gap-6">
             <DevelopmentEquity data={filtered} />
             <BlocExplorer data={filtered} onSelect={setSelected} />
-          </div>
-          <div className="mt-6">
-            <IsoRegionStacks data={filtered} />
           </div>
           <div className="grid lg:grid-cols-2 gap-6 mt-6">
             <SubRegionTreemap data={filtered} />
