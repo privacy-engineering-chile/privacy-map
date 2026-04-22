@@ -26,7 +26,7 @@ export const RotatingStat = () => {
     const total = JURISDICTIONS.length;
     const comp = JURISDICTIONS.filter((j) => j.lawStatus === "comprehensive").length;
     const none = JURISDICTIONS.filter((j) => j.lawStatus === "none").length;
-    const dpa = JURISDICTIONS.filter((j) => j.dpa?.exists).length;
+    const dpa = JURISDICTIONS.filter((j) => j.hasDPA).length;
     const years = JURISDICTIONS.map((j) => j.year).filter((y): y is number => !!y);
     const pioneerYear = Math.min(...years);
     const recentYear = Math.max(...years);
