@@ -18,7 +18,10 @@ import {
 } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ExternalLink, FileDown, Building2 } from "lucide-react";
+import { ExternalLink, FileDown, Building2, Share2, Download } from "lucide-react";
+import { downloadCountryCard, shareCountryCard } from "@/lib/generateCountryCard";
+import { useState } from "react";
+import { toast } from "@/hooks/use-toast";
 
 interface Props {
   country: Jurisdiction | null;
