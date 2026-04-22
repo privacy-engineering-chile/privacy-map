@@ -58,15 +58,30 @@ export const TreatyMatrix = ({
         </select>
       </div>
 
-      <div className="overflow-x-auto max-h-[480px]">
+      <div className="overflow-x-auto max-h-[520px]">
         <table className="w-full text-xs">
           <thead className="sticky top-0 bg-card z-10">
-            <tr>
-              <th className="text-left py-2 px-2 font-medium text-muted-foreground">{t("tm.country")}</th>
+            <tr className="h-32 align-bottom">
+              <th className="text-left py-2 px-2 font-medium text-muted-foreground align-bottom min-w-[160px]">
+                {t("tm.country")}
+              </th>
               {CORE_TREATIES.map((tk) => (
-                <th key={tk} className="px-1 py-2 font-medium text-muted-foreground text-center">
-                  <div className="rotate-[-30deg] origin-bottom-left inline-block whitespace-nowrap">
-                    {TREATY_LABELS[tk]}
+                <th
+                  key={tk}
+                  className="px-1 pb-2 font-medium text-muted-foreground align-bottom"
+                  style={{ height: "120px", minWidth: "32px" }}
+                >
+                  <div className="flex justify-center items-end h-full">
+                    <span
+                      className="inline-block whitespace-nowrap text-[11px] leading-none"
+                      style={{
+                        transform: "rotate(-55deg)",
+                        transformOrigin: "left bottom",
+                        translate: "10px 0",
+                      }}
+                    >
+                      {TREATY_LABELS[tk]}
+                    </span>
                   </div>
                 </th>
               ))}
