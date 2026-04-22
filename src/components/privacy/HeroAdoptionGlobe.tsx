@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ComposableMap, Geographies, Geography } from "react-simple-maps";
 import { JURISDICTIONS, REGION_COLORS, YEAR_MAX, YEAR_MIN } from "@/data/jurisdictions";
-import { Button } from "@/components/ui/button";
 import { Play } from "lucide-react";
+import { useT } from "@/i18n/LanguageContext";
 
 const GEO_URL = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json";
 
@@ -19,6 +19,7 @@ export const HeroAdoptionGlobe = ({ total }: Props) => {
   const [year, setYear] = useState(YEAR_MAX);
   const [animating, setAnimating] = useState(true);
   const raf = useRef<number | null>(null);
+  const { t } = useT();
 
   const byIso = useMemo(() => {
     const m = new Map<string, { year: number; region: string }>();
@@ -103,16 +104,17 @@ export const HeroAdoptionGlobe = ({ total }: Props) => {
           {year}
         </span>
         <span className="text-[10px] uppercase tracking-widest text-muted-foreground">
-          {cumulative} / {total}
+          {t("globe.cumulative", { n: cumulative, total })}
         </span>
       </div>
 
       {!animating && (
         <button
           onClick={() => setAnimating(true)}
-          className="absolute top-3 right-3 inline-flex items-center gap-1.5 text-[10px] uppercase tracking-widest bg-background/85 backdrop-blur px-3 py-1.5 rounded-full border border-border/60 hover:bg-accent hover:text-accent-foreground transition-colors"
+          aria-label={t("globe.replay")}
+          className="absolute top-3 right-3 inline-flex items-center justify-center h-8 w-8 bg-background/85 backdrop-blur rounded-full border border-border/60 hover:bg-accent hover:text-accent-foreground transition-colors"
         >
-          <Play className="h-3 w-3" /> Replay
+          <Play className="h-3.5 w-3.5" />
         </button>
       )}
     </div>

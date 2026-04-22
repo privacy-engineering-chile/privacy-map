@@ -10,6 +10,7 @@ import {
   YEAR_MIN,
 } from "@/data/jurisdictions";
 import { Filters } from "@/hooks/useFilters";
+import { useT } from "@/i18n/LanguageContext";
 
 const GEO_URL = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json";
 
@@ -27,6 +28,8 @@ const ID_TO_ISO3: Record<string, string> = {
 
 export const WorldMap = forwardRef<HTMLDivElement, Props>(
   ({ filtered, filters, onSelect, selected }, ref) => {
+    const { t, lang } = useT();
+    const latamShort = lang === "es" ? "LatAm & Caribe" : "LatAm & Caribbean";
     const [tooltip, setTooltip] = useState<{ x: number; y: number; j: Jurisdiction } | null>(null);
 
     const byIso = useMemo(() => {
@@ -131,15 +134,15 @@ export const WorldMap = forwardRef<HTMLDivElement, Props>(
         <div className="absolute bottom-3 left-3 right-3 flex flex-wrap items-center gap-3 bg-background/85 backdrop-blur rounded-xl px-3 py-2 text-xs border border-border">
           {filters.colorMode === "status" && (
             <>
-              <LegendDot color={STATUS_COLOR.comprehensive} label="Ley integral" />
-              <LegendDot color={STATUS_COLOR.partial} label="Sectorial" />
-              <LegendDot color={STATUS_COLOR.none} label="Sin ley" />
+              <LegendDot color={STATUS_COLOR.comprehensive} label={t("map.legend.comp")} />
+              <LegendDot color={STATUS_COLOR.partial} label={t("map.legend.sect")} />
+              <LegendDot color={STATUS_COLOR.none} label={t("map.legend.none")} />
             </>
           )}
           {filters.colorMode === "dpa" && (
             <>
-              <LegendDot color="hsl(var(--status-comprehensive))" label="Con DPA" />
-              <LegendDot color="hsl(var(--status-none))" label="Sin DPA" />
+              <LegendDot color="hsl(var(--status-comprehensive))" label={t("map.legend.dpaY")} />
+              <LegendDot color="hsl(var(--status-none))" label={t("map.legend.dpaN")} />
             </>
           )}
           {filters.colorMode === "region" &&
@@ -147,7 +150,7 @@ export const WorldMap = forwardRef<HTMLDivElement, Props>(
               <LegendDot
                 key={r}
                 color={c}
-                label={r === "Latin America and the Caribbean" ? "LatAm & Caribe" : r}
+                label={r === "Latin America and the Caribbean" ? latamShort : r}
               />
             ))}
           {filters.colorMode === "year" && (
@@ -163,7 +166,7 @@ export const WorldMap = forwardRef<HTMLDivElement, Props>(
             </div>
           )}
           <span className="ml-auto text-muted-foreground">
-            {filtered.length} jurisdicciones · gris = sin datos
+            {t("map.legend.foot", { n: filtered.length })}
           </span>
         </div>
       </div>

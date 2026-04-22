@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Plus, X, Check } from "lucide-react";
+import { useT } from "@/i18n/LanguageContext";
 
 const ISO_TO_FLAG = (iso3?: string | null) => {
   if (!iso3) return "🌐";
@@ -36,6 +37,7 @@ const decode = (): string[] => {
 };
 
 export const CountryComparator = ({ onSelect }: { onSelect: (j: Jurisdiction) => void }) => {
+  const { t } = useT();
   const [iso3s, setIso3s] = useState<string[]>(decode);
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
@@ -85,10 +87,8 @@ export const CountryComparator = ({ onSelect }: { onSelect: (j: Jurisdiction) =>
     <Card className="p-5 shadow-soft">
       <div className="flex items-baseline justify-between gap-3 flex-wrap">
         <div>
-          <h3 className="font-display text-2xl">Compara hasta {MAX} países</h3>
-          <p className="text-xs text-muted-foreground">
-            Leyes, autoridad, tratados y antigüedad — lado a lado.
-          </p>
+          <h3 className="font-display text-2xl">{t("cc.title", { n: MAX })}</h3>
+          <p className="text-xs text-muted-foreground">{t("cc.lead")}</p>
         </div>
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
@@ -98,20 +98,20 @@ export const CountryComparator = ({ onSelect }: { onSelect: (j: Jurisdiction) =>
               disabled={iso3s.length >= MAX}
               className="gap-1"
             >
-              <Plus className="h-4 w-4" /> Añadir país
+              <Plus className="h-4 w-4" /> {t("cc.add")}
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-72 p-2" align="end">
             <Input
               autoFocus
-              placeholder="Buscar país…"
+              placeholder={t("cc.search")}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               className="h-8 text-sm"
             />
             <div className="mt-2 max-h-72 overflow-y-auto">
               {candidates.length === 0 && (
-                <div className="text-xs text-muted-foreground p-2">Sin resultados.</div>
+                <div className="text-xs text-muted-foreground p-2">{t("cc.noresults")}</div>
               )}
               {candidates.map((j) => (
                 <button
@@ -131,14 +131,12 @@ export const CountryComparator = ({ onSelect }: { onSelect: (j: Jurisdiction) =>
 
       {selected.length === 0 ? (
         <div className="mt-6 text-sm text-muted-foreground text-center py-12 border border-dashed border-border rounded-xl">
-          Añade países para comenzar la comparación.
+          {t("cc.empty")}
         </div>
       ) : (
         <div
-          className="mt-5 grid gap-3"
-          style={{
-            gridTemplateColumns: `repeat(${selected.length}, minmax(0, 1fr))`,
-          }}
+          className="mt-5 grid gap-3 grid-cols-1 sm:grid-cols-2 lg:[grid-template-columns:repeat(var(--cmp-cols),minmax(0,1fr))]"
+          style={{ ["--cmp-cols" as any]: selected.length }}
         >
           {selected.map((j) => {
             const age = j.keyLawYear ? new Date().getFullYear() - j.keyLawYear : 0;
@@ -152,7 +150,7 @@ export const CountryComparator = ({ onSelect }: { onSelect: (j: Jurisdiction) =>
                 <button
                   onClick={() => remove(j.iso3!)}
                   className="absolute top-2 right-2 h-6 w-6 rounded-full hover:bg-muted flex items-center justify-center text-muted-foreground"
-                  aria-label="Quitar"
+                  aria-label={t("cc.remove")}
                 >
                   <X className="h-3.5 w-3.5" />
                 </button>
@@ -180,7 +178,7 @@ export const CountryComparator = ({ onSelect }: { onSelect: (j: Jurisdiction) =>
 
                 <div className="text-xs space-y-1">
                   <div className="text-muted-foreground uppercase tracking-wider text-[9px]">
-                    Ley vigente
+                    {t("cc.keylaw")}
                   </div>
                   <div className="line-clamp-2 font-medium">
                     {j.keyLawName ?? "—"}
@@ -193,7 +191,7 @@ export const CountryComparator = ({ onSelect }: { onSelect: (j: Jurisdiction) =>
                 {j.firstLawYear && j.firstLawYear !== j.keyLawYear && (
                   <div className="text-xs">
                     <div className="text-muted-foreground uppercase tracking-wider text-[9px]">
-                      Primera ley
+                      {t("cc.firstlaw")}
                     </div>
                     <div className="text-muted-foreground">{j.firstLawYear}</div>
                   </div>
@@ -201,7 +199,7 @@ export const CountryComparator = ({ onSelect }: { onSelect: (j: Jurisdiction) =>
 
                 <div className="text-xs">
                   <div className="text-muted-foreground uppercase tracking-wider text-[9px]">
-                    Antigüedad ley vigente
+                    {t("cc.age")}
                   </div>
                   <div className="flex items-center gap-2 mt-1">
                     <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
@@ -216,16 +214,16 @@ export const CountryComparator = ({ onSelect }: { onSelect: (j: Jurisdiction) =>
 
                 <div className="text-xs">
                   <div className="text-muted-foreground uppercase tracking-wider text-[9px] mb-1">
-                    Autoridad (DPA)
+                    {t("cc.dpa")}
                   </div>
                   <div className={j.hasDPA ? "" : "text-muted-foreground italic"}>
-                    {j.hasDPA ? j.dpa ?? "Sí" : "Sin autoridad"}
+                    {j.hasDPA ? j.dpa ?? "✓" : t("cc.dpa.none")}
                   </div>
                 </div>
 
                 <div>
                   <div className="text-muted-foreground uppercase tracking-wider text-[9px] mb-1.5">
-                    Tratados
+                    {t("cc.treaties")}
                   </div>
                   <div className="grid grid-cols-3 gap-1.5">
                     {CORE_TREATIES.map((t) => {
