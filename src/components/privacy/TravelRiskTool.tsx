@@ -257,17 +257,31 @@ export const TravelRiskTool = () => {
 
       {/* Explanation */}
       <div className="mt-5 rounded-xl border border-border bg-muted/30 p-4">
-        <div className="flex items-center gap-2 mb-2">
+        <div className="flex items-center gap-2 mb-3">
           <Info className="h-4 w-4 text-accent" />
-          <span className="text-sm font-semibold">{t("trv.howtitle")}</span>
+          <span className="text-sm font-semibold uppercase tracking-wider">{t("trv.howtitle")}</span>
+          <span className="ml-auto text-xs text-muted-foreground tabular-nums">0–100</span>
         </div>
-        <p className="text-sm text-muted-foreground mb-2">{t("trv.how1")}</p>
-        <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside marker:text-accent">
-          <li>{t("trv.how.law")}</li>
-          <li>{t("trv.how.dpa")}</li>
-          <li>{t("trv.how.treaty")}</li>
-        </ul>
-        <p className="text-sm text-muted-foreground mt-2">{t("trv.how.drop")}</p>
+        <div className="grid sm:grid-cols-3 gap-2">
+          {[
+            { label: t("trv.how.law.label"), value: t("trv.how.law.value") },
+            { label: t("trv.how.dpa.label"), value: t("trv.how.dpa.value") },
+            { label: t("trv.how.treaty.label"), value: t("trv.how.treaty.value") },
+          ].map((row) => (
+            <div
+              key={row.label}
+              className="rounded-lg bg-background/60 border border-border/60 px-3 py-2"
+            >
+              <div className="text-[10px] uppercase tracking-widest text-muted-foreground">
+                {row.label}
+              </div>
+              <div className="text-sm font-medium tabular-nums mt-0.5">{row.value}</div>
+            </div>
+          ))}
+        </div>
+        <div className="mt-3 text-xs text-muted-foreground font-mono tracking-tight">
+          {t("trv.how.formula")}
+        </div>
       </div>
     </Card>
   );
