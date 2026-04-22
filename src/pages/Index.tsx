@@ -53,8 +53,15 @@ const Index = () => {
       <ScrollProgressRail />
       <header className="bg-hero border-b border-border">
         <div className="container mx-auto px-4 py-10 md:py-16">
-          <div className="flex items-start justify-between gap-4 flex-wrap">
-            <div className="max-w-3xl animate-fade-up">
+          <div className="flex items-start justify-end gap-2 flex-wrap mb-6">
+            <ThemeToggle />
+            <LanguageToggle />
+            <PrivacyBadge />
+            <ExportButtons mapRef={mapRef} />
+          </div>
+
+          <div className="grid lg:grid-cols-[1fr_320px] gap-8 items-start">
+            <div className="animate-fade-up">
               <div className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.25em] text-accent font-bold mb-4">
                 <span className="h-2 w-2 rounded-full bg-accent animate-pulse" /> {t("hero.eyebrow")}
               </div>
@@ -66,17 +73,13 @@ const Index = () => {
               </p>
               <RotatingStat />
             </div>
-            <div className="flex items-center gap-2 flex-wrap">
-              <ThemeToggle />
-              <LanguageToggle />
-              <PrivacyBadge />
-              <ExportButtons mapRef={mapRef} />
+            <div className="lg:pt-8">
+              <YourCountryCard onSelect={setSelected} />
             </div>
           </div>
 
-          <div className="mt-10 grid lg:grid-cols-[1fr_320px] gap-6 items-start">
+          <div className="mt-10">
             <HeroAdoptionGlobe total={JURISDICTIONS.length} />
-            <YourCountryCard onSelect={setSelected} />
           </div>
 
           <div className="mt-8">
