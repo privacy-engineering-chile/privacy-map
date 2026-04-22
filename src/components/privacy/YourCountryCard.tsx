@@ -51,7 +51,7 @@ export const YourCountryCard = ({ onSelect }: Props) => {
   if (dismissed || !country) return null;
 
   return (
-    <Card className="w-full lg:w-[300px] p-4 shadow-pop border-accent/30 bg-card/95 backdrop-blur animate-fade-up relative">
+    <Card className="w-full p-4 shadow-pop border-accent/30 bg-card/95 backdrop-blur animate-fade-up relative">
       <button
         onClick={dismiss}
         className="absolute top-2 right-2 text-muted-foreground hover:text-foreground"
