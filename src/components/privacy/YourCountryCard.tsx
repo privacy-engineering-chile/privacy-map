@@ -51,23 +51,23 @@ export const YourCountryCard = ({ onSelect }: Props) => {
   if (dismissed || !country) return null;
 
   return (
-    <Card className="w-full p-4 shadow-pop border-accent/30 bg-card/95 backdrop-blur animate-fade-up relative">
+    <Card className="w-full p-6 shadow-pop border-accent/30 bg-card/95 backdrop-blur animate-fade-up relative">
       <button
         onClick={dismiss}
-        className="absolute top-2 right-2 text-muted-foreground hover:text-foreground"
+        className="absolute top-3 right-3 text-muted-foreground hover:text-foreground"
         aria-label={t("you.close")}
       >
-        <X className="h-3.5 w-3.5" />
+        <X className="h-4 w-4" />
       </button>
-      <div className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-accent font-bold">
-        <MapPin className="h-3 w-3" /> {t("you.location")}
+      <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-accent font-bold">
+        <MapPin className="h-4 w-4" /> {t("you.location")}
       </div>
-      <div className="flex items-center gap-2 mt-2">
-        <span className="text-3xl">{isoToFlag(iso2)}</span>
+      <div className="flex items-center gap-3 mt-3">
+        <span className="text-5xl">{isoToFlag(iso2)}</span>
         <div>
-          <div className="font-display text-lg font-bold leading-tight">{country.jurisdiction}</div>
+          <div className="font-display text-2xl font-bold leading-tight">{country.jurisdiction}</div>
           <div
-            className="inline-block text-[10px] px-1.5 py-0.5 rounded text-white font-medium mt-0.5"
+            className="inline-block text-xs px-2 py-0.5 rounded text-white font-medium mt-1"
             style={{ background: STATUS_COLOR[country.lawStatus] }}
           >
             {STATUS_LABEL[country.lawStatus]}
@@ -75,13 +75,13 @@ export const YourCountryCard = ({ onSelect }: Props) => {
         </div>
       </div>
       {country.keyLawName && (
-        <div className="mt-2 text-xs text-muted-foreground line-clamp-2">
+        <div className="mt-3 text-sm text-muted-foreground line-clamp-2">
           {country.keyLawName} {country.keyLawYear && `· ${country.keyLawYear}`}
         </div>
       )}
       <Button
-        size="sm"
-        className="w-full mt-3"
+        size="default"
+        className="w-full mt-4"
         onClick={() => onSelect(country)}
       >
         {t("you.viewDetail")}

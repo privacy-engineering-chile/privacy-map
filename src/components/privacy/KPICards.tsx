@@ -55,11 +55,11 @@ export const KPICards = () => {
     <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
       {items.map((it, i) => (
         <TiltCard key={it.label} delay={i * 80}>
-          <div className="text-[10px] md:text-xs uppercase tracking-widest text-muted-foreground">{it.label}</div>
-          <div className={`font-display text-3xl md:text-5xl font-black mt-2 ${it.color}`}>
+          <div className="text-xs md:text-sm uppercase tracking-widest text-muted-foreground">{it.label}</div>
+          <div className={`font-display text-4xl md:text-5xl font-black mt-2 ${it.color}`}>
             {it.value}
           </div>
-          {it.sub && <div className="text-[10px] md:text-xs text-muted-foreground mt-1 truncate">{it.sub}</div>}
+          {it.sub && <div className="text-xs md:text-sm text-muted-foreground mt-1 truncate">{it.sub}</div>}
         </TiltCard>
       ))}
     </div>
