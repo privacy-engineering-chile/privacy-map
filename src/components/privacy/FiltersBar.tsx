@@ -45,8 +45,8 @@ export const FiltersBar = ({ filters, setFilters, reset }: Props) => {
     arr.includes(v) ? arr.filter((x) => x !== v) : [...arr, v];
 
   return (
-    <div className="-mx-4 px-4 py-3 bg-background/85 border-b border-border">
-      <div className="container mx-auto flex flex-wrap items-center gap-2">
+    <div className="px-3 py-2.5 bg-background/60">
+      <div className="flex flex-wrap items-center gap-2">
         <div className="relative flex-1 min-w-[170px] max-w-xs">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
