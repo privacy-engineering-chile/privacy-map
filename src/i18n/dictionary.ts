@@ -123,6 +123,17 @@ export const dict: Dict = {
   "trv.high":                { es: "Riesgo alto",                                     en: "High risk" },
   "trv.caution":             { es: "Precaución",                                      en: "Caution" },
   "trv.safe":                { es: "Datos a salvo",                                   en: "Data safe" },
+  "trv.swap":                { es: "Intercambiar",                                    en: "Swap" },
+  "trv.search":              { es: "Buscar país…",                                    en: "Search country…" },
+  "trv.score":               { es: "Puntuación",                                      en: "Score" },
+  "trv.howtitle":            { es: "Cómo se calcula",                                 en: "How it's calculated" },
+  "trv.how1":                { es: "Cada país recibe una puntuación de 0–100 según su marco de protección de datos:", en: "Each country gets a 0–100 score based on its data-protection framework:" },
+  "trv.how.law":             { es: "Ley integral = 80 · ley sectorial = 40 · sin ley = 0",                en: "Comprehensive law = 80 · sectoral law = 40 · no law = 0" },
+  "trv.how.dpa":             { es: "+10 si existe una autoridad de protección de datos (DPA) activa", en: "+10 if an active data protection authority (DPA) exists" },
+  "trv.how.treaty":          { es: "+10 si participa en al menos un tratado internacional clave", en: "+10 if it joins at least one key international treaty" },
+  "trv.how.drop":            { es: "La caída = puntuación origen − puntuación destino. Si es negativa o cero, tus datos viajan a un entorno igual o mejor.", en: "Drop = origin score − destination score. If zero or negative, your data travels to an equal or better environment." },
+  "trv.verdict.label":       { es: "Veredicto",                                       en: "Verdict" },
+  "trv.improvement":         { es: "Mejora de protección",                            en: "Protection upgrade" },
 
   // CountryComparator
   "cc.title":                { es: "Compara hasta {n} países",                        en: "Compare up to {n} countries" },
