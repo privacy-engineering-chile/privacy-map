@@ -59,21 +59,21 @@ const Index = () => {
             <PrivacyBadge />
           </div>
 
-          <div className="grid lg:grid-cols-[1fr_320px] gap-8 items-center">
+          <div className="grid lg:grid-cols-[1fr_400px] gap-10 items-center">
             <div className="animate-fade-up">
-              <div className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.25em] text-accent font-bold mb-4">
+              <div className="inline-flex items-center gap-2 text-sm uppercase tracking-[0.25em] text-accent font-bold mb-4">
                 <span className="h-2 w-2 rounded-full bg-accent animate-pulse" /> {t("hero.eyebrow")}
               </div>
               <h1 className="font-display text-4xl sm:text-5xl md:text-7xl font-black leading-[0.95] text-balance">
                 {t("hero.title.a")}<span className="text-accent">{t("hero.title.accent")}</span>{t("hero.title.b")}
               </h1>
-              <p className="mt-3 text-sm md:text-base italic text-muted-foreground/90 max-w-2xl">
+              <p className="mt-4 text-base md:text-lg italic text-muted-foreground/90 max-w-2xl">
                 {t("hero.valueprop")}
               </p>
               <RotatingStat />
             </div>
-            <div className="flex justify-center lg:justify-start">
-              <div className="w-full max-w-[300px]">
+            <div className="flex justify-center">
+              <div className="w-full max-w-[400px]">
                 <YourCountryCard onSelect={setSelected} />
               </div>
             </div>
