@@ -20,7 +20,7 @@ import { BlocExplorer } from "@/components/privacy/BlocExplorer";
 import { ChapterHeading } from "@/components/privacy/ChapterHeading";
 import { AdoptionPlayback } from "@/components/privacy/AdoptionPlayback";
 import { CountryComparator } from "@/components/privacy/CountryComparator";
-import { HeroGlobeSwitcher } from "@/components/privacy/HeroGlobeSwitcher";
+import { HeroAdoptionGlobe } from "@/components/privacy/HeroAdoptionGlobe";
 import { YourCountryCard } from "@/components/privacy/YourCountryCard";
 
 
@@ -74,7 +74,7 @@ const Index = () => {
           </div>
 
           <div className="mt-10 grid lg:grid-cols-[1fr_320px] gap-6 items-start">
-            <HeroGlobeSwitcher total={JURISDICTIONS.length} onSelect={setSelected} />
+            <HeroAdoptionGlobe total={JURISDICTIONS.length} />
             <YourCountryCard onSelect={setSelected} />
           </div>
 
