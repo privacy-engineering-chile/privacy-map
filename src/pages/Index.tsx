@@ -112,11 +112,9 @@ const Index = () => {
 
         <section className="animate-fade-up">
           <ChapterHeading number="02" title={t("ch2.title")} lead={t("ch2.lead")} accent="text-status-treaty" />
-          <div className="grid lg:grid-cols-2 gap-6">
+          <div className="space-y-6">
             <TreatyMatrix data={filtered} onSelect={setSelected} />
             <TreatyRegionStacks data={filtered} />
-          </div>
-          <div className="mt-6">
             <RegionTreatySankey data={filtered} />
           </div>
         </section>
