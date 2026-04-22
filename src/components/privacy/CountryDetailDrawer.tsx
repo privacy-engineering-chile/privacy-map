@@ -100,13 +100,21 @@ export const CountryDetailDrawer = ({ country, onClose }: Props) => {
         </SheetHeader>
 
         {/* Status badge */}
-        <div className="mt-5">
+        <div className="mt-5 flex items-center justify-between gap-2 flex-wrap">
           <Badge
             className="text-xs"
             style={{ background: STATUS_COLOR[country.lawStatus], color: "white" }}
           >
             {STATUS_LABEL[country.lawStatus]}
           </Badge>
+          <div className="flex gap-1.5">
+            <Button size="sm" variant="outline" onClick={handleShare} disabled={busy}>
+              <Share2 className="h-3.5 w-3.5" /> Compartir
+            </Button>
+            <Button size="sm" variant="ghost" onClick={handleDownload} disabled={busy} aria-label="Descargar tarjeta">
+              <Download className="h-3.5 w-3.5" />
+            </Button>
+          </div>
         </div>
 
         {/* Key law */}
