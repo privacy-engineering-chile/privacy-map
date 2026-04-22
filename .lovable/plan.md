@@ -1,83 +1,89 @@
 
-# 🚀 Top 4 Wow Moments — Build Plan
+# 🌐 3D + Isometric + Parallax Bundle — Build Plan
 
-Implementing the four highest-impact additions to Privacy Atlas v2, designed to feel cohesive (not bolted on) and to land the "whoa" reaction in the first 10 seconds.
+Three layered enhancements that add **dimensionality** to Privacy Atlas v2 without breaking what's there.
 
 ---
 
-## 1. 🌍 Hero Adoption Globe
+## A1 — 3D Globe Hero 🌎
 
-Replace the static hero block with a **live SVG world that lights up year by year** (1973 → 2025) over ~6 seconds, then settles on "today".
+A real, draggable WebGL globe replacing (or coexisting with) the current flat `HeroAdoptionGlobe`.
 
-- New component `HeroAdoptionGlobe.tsx` using `react-simple-maps` (already installed) with an orthographic-style projection sized for the hero band (~500×320).
-- Countries start dimmed (`hsl(var(--muted) / 0.15)`); when their `firstLawYear <= currentYear`, they animate to their region color via a 400 ms CSS transition.
-- A thin progress rail under the headline shows the year ticking; a counter below the H1 morphs from "0 jurisdicciones protegen tus datos" → final count.
-- `requestAnimationFrame` driven, auto-plays on mount, replays on click.
-- Headline keeps current copy but the accent word "datos" pulses in sync with each new country lighting up.
+- New component `Globe3D.tsx` using `@react-three/fiber@^8.18`, `@react-three/drei@^9.122`, `three@^0.160`.
+- Sphere with a subtle atmosphere shader + faint starfield (`<Stars/>` from drei).
+- Country geometry built from `world-atlas` GeoJSON, projected onto the sphere as **extruded pads** via `THREE.Shape` + `ExtrudeGeometry`. Pad height = years since first law (0 for "none"). Pad color = region color (or status, toggled).
+- Auto-rotates at 0.05 rad/s; OrbitControls enable drag + pinch-zoom (no pan).
+- Same 1973 → 2025 sweep timeline as the flat version: pads pop up + light up as their year is reached. Replay button kept.
+- Click a pad → `onSelect(country)` opens existing drawer.
+- A small toggle pill `2D | 3D` in the corner switches between the existing `HeroAdoptionGlobe` and the new `Globe3D`. Default = 3D on capable devices, 2D otherwise.
+- **Fallback**: feature-detect WebGL via a one-line `canvas.getContext('webgl2') || getContext('webgl')`. If null → silently render the existing 2D globe. Preview sandbox has no GPU adapter, so the editor preview will fall back gracefully; the published site renders 3D.
+- Respects `prefers-reduced-motion`: no auto-rotate, no animated sweep — final state on mount.
 
-## 2. 📍 Auto-Detect "Your Country" + Travel Risk
+## B1 — Isometric Region Stacks 🧱
 
-A floating card top-right of the hero, plus a compact tool above Chapter 5.
+A new editorial showpiece in **Chapter 4 (Equity)**, sitting next to `DevelopmentEquity`.
 
-**A. Geolocation card** (`YourCountryCard.tsx`)
-- On mount, `fetch("https://ipapi.co/json/")` (no key needed, free CORS endpoint, ~50 ms).
-- Match returned `country_code` against `JURISDICTIONS[].iso3` (convert ISO2 → ISO3 via small lookup or use `country_code_iso3` field from ipapi).
-- Render a 320×auto card: flag emoji, "Tu ubicación: 🇲🇽 México", status pill, key-law line, a CTA *"Ver detalle"* that opens the existing `CountryDetailDrawer`.
-- Graceful fallback: hide silently if fetch fails or country not in dataset. Dismissible (stored in `sessionStorage`).
+- New component `IsoRegionStacks.tsx` — pure SVG, no new deps.
+- One **isometric tower per region** (8 towers in a row, wrapping on mobile).
+- Each tower is a stack of cubes; each cube layer = one of the 6 core treaties; cube width scales with the % of countries in that region holding that treaty (10% → small cube, 100% → full cube).
+- Top of the tower shows a flag-like banner with the region name + total country count.
+- Color of each layer matches existing `--treaty-*` CSS vars.
+- Hover a layer → tooltip "12 / 35 países en LatAm firmaron CoE 108+".
+- ~280 LOC, isometric transform `matrix(0.866, 0.5, -0.866, 0.5, 0, 0)` applied per cube face.
 
-**B. Travel Risk mini-tool** (`TravelRiskTool.tsx`, new chapter 4½ block or top of Chapter 5)
-- Two searchable selects: *Origen* → *Destino* (defaults to detected country → US).
-- Compute a 0-100 "data safety drop" score:
-  - Origin status weight (none=0, sectoral=40, comprehensive=80) + DPA bonus (+10) + treaty bonus (+10).
-  - Same for destination. Drop = max(0, originScore − destScore).
-- Verdict card with color-coded badge (`safe / caution / risk`), one-line plain-language explanation, and a treaty-overlap chip row ("Ambos en CoE 108+: tu data viaja con garantías").
-- URL-syncs `?from=DEU&to=USA`.
+## C1 — Parallax Tilt ✨
 
-## 3. 🌓 Dark/Light Mode with Color Morph
+Ambient depth across the page, zero new deps.
 
-- Add `ThemeToggle.tsx` (sun/moon icon, top-right header) using a tiny `useTheme` hook persisted in `localStorage`.
-- Add a `.light` class with overrides in `index.css`. The base palette already lives in CSS variables, so we redefine them under `:root.light { --background: ... }`.
-- The "morph" effect: add `transition: background-color 600ms, color 600ms, fill 600ms, stroke 600ms` to `body, svg path, .card` selectors so the swap interpolates smoothly instead of snapping.
-- Region/status/treaty colors keep their hue but adjust lightness for legibility on light bg (defined as separate vars `--status-comprehensive-light`, etc., consumed via `light-dark()` fallback or a second variable set).
-- Map, charts, Sankey, scatter all already read from CSS vars → no per-component changes needed beyond auditing 2-3 hardcoded colors.
-
-## 4. 📸 Shareable Country Card
-
-In `CountryDetailDrawer`, add a *"Compartir tarjeta"* button that generates a 1080×1080 PNG.
-
-- New util `generateCountryCard.ts`: uses HTML5 `<canvas>` (no extra deps) to draw:
-  - Top band in the country's region color, big flag emoji + country name in `font-display`.
-  - Status badge, key-law name + year, DPA chip, 6 treaty dots (filled if member).
-  - Footer: "privacy-map.lovable.app" + a small auto-generated QR (via tiny `qrcode` lib, ~6 KB, added to deps) pointing to `/?country=ISO3`.
-  - Background: subtle dotted grid in muted color, accent corner triangle.
-- Two actions: **Download PNG** (canvas → blob → `<a download>`) and **Share** (uses `navigator.share` with the blob on mobile; falls back to download on desktop).
-- Drawer also gets a deep-link `?country=` param so the existing single-country URL works as the share target.
+- New hook `useParallaxTilt.ts`: tracks `mousemove` on a target element, returns `{rx, ry}` clamped to ±6°.
+- Apply to:
+  - The hero globe wrapper (subtle, max ±4° so it doesn't fight OrbitControls).
+  - The 4 KPI cards (max ±6° each, independent — feels playful).
+  - The `YourCountryCard` (max ±5°).
+- Disabled on touch devices and when `prefers-reduced-motion: reduce`.
+- ~50 LOC total.
 
 ---
 
 ## Technical changes
 
 **New files**
-- `src/components/privacy/HeroAdoptionGlobe.tsx`
-- `src/components/privacy/YourCountryCard.tsx`
-- `src/components/privacy/TravelRiskTool.tsx`
-- `src/components/privacy/ThemeToggle.tsx`
-- `src/hooks/useTheme.ts`
-- `src/lib/generateCountryCard.ts`
-- `src/lib/iso2to3.ts` (small lookup table for geolocation)
+- `src/components/privacy/Globe3D.tsx` — r3f scene
+- `src/components/privacy/HeroGlobeSwitcher.tsx` — wraps `HeroAdoptionGlobe` + `Globe3D` with 2D/3D toggle and WebGL detection
+- `src/components/privacy/IsoRegionStacks.tsx` — isometric SVG component
+- `src/hooks/useParallaxTilt.ts` — mouse tilt hook
+- `src/lib/webglSupport.ts` — feature detection helper
+- `src/lib/geoToSphere.ts` — small helper converting GeoJSON polygons to extruded `THREE.BufferGeometry` on a sphere
 
 **Edited**
-- `src/pages/Index.tsx` — mount globe in hero, add `YourCountryCard`, `ThemeToggle` in header, `TravelRiskTool` block, read `?country=` on mount to open drawer.
-- `src/components/privacy/CountryDetailDrawer.tsx` — add share buttons + render preview thumbnail.
-- `src/index.css` — `.light` palette, smooth color transitions, optional brighter region tints for light mode.
-- `package.json` — add `qrcode` (+ `@types/qrcode`).
+- `src/pages/Index.tsx` — swap `HeroAdoptionGlobe` for `HeroGlobeSwitcher`; add `IsoRegionStacks` to Chapter 4; wrap KPI grid + YourCountryCard with parallax.
+- `src/components/privacy/KPICards.tsx` — accept optional tilt props on each card.
+- `package.json` — add `three@^0.160`, `@react-three/fiber@^8.18`, `@react-three/drei@^9.122`, `@types/three`.
 
 **Out of scope**
-- Sonification, force-directed network, scroll-pinned map, leaderboards, OG image generation (server-side).
-- Any backend — geolocation uses public IP API with no key.
+- A2 treaty constellation, A3 terrain, B2 cartogram, B3 book shelf, C2 card flip, C3 layered scroll. (Easy follow-ups if you want more after seeing this.)
 
-**Edge cases handled**
-- ipapi quota exceeded / blocked → card stays hidden, no UI shift.
-- User country not in dataset → card shows "Tu jurisdicción no está en el atlas todavía".
-- Reduced motion preference → globe skips animation and renders final state immediately.
-- Light mode is opt-in; dark stays default to preserve current visual identity.
+---
+
+## Edge cases & safety
+
+- **No WebGL** (sandbox, old browsers): switcher falls back to current 2D globe. Toggle hides the "3D" option.
+- **Slow devices**: `Globe3D` caps `dpr` at 1.5 and disables shadows. Country pads are batched into a single `InstancedMesh` for performance with ~250 countries.
+- **Reduced motion**: no auto-rotate, no sweep, no parallax — final visual state only.
+- **Touch**: parallax disabled; OrbitControls remain (pinch + drag).
+- **Bundle size**: three.js + r3f + drei adds ~250 KB gzipped. Lazy-loaded via `React.lazy(() => import('./Globe3D'))` so the 2D fallback path stays light.
+- **Click vs drag**: a 5px movement threshold on pointerdown→up disambiguates orbit drags from country clicks.
+
+---
+
+## What it feels like
+
+1. Page loads → 3D Earth fades in, slowly rotating, country pads rising one decade at a time. Mouse tilt makes the surrounding hero subtly breathe.
+2. Scroll to Chapter 4 → isometric towers stand like a city skyline of treaties.
+3. Everything else stays exactly as you designed it. No regressions.
+
+---
+
+## How to proceed
+
+If this looks right, approve and I'll build it. If you want to swap any piece (e.g. *"replace B1 with B2 cartogram"* or *"skip C1 parallax"*), say so and I'll revise the plan.
