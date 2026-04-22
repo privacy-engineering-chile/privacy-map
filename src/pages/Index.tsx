@@ -65,10 +65,18 @@ const Index = () => {
                 que aún no protegen los datos personales.
               </p>
             </div>
-            <ExportButtons mapRef={mapRef} />
+            <div className="flex items-center gap-2">
+              <ThemeToggle />
+              <ExportButtons mapRef={mapRef} />
+            </div>
           </div>
 
-          <div className="mt-10">
+          <div className="mt-10 grid lg:grid-cols-[1fr_320px] gap-6 items-start">
+            <HeroAdoptionGlobe total={JURISDICTIONS.length} />
+            <YourCountryCard onSelect={setSelected} />
+          </div>
+
+          <div className="mt-8">
             <KPICards />
           </div>
         </div>
