@@ -22,6 +22,9 @@ import { TravelRiskTool } from "@/components/privacy/TravelRiskTool";
 import { ThemeToggle } from "@/components/privacy/ThemeToggle";
 import { LanguageToggle } from "@/components/privacy/LanguageToggle";
 import { PrivacyBadge } from "@/components/privacy/PrivacyBadge";
+import { RotatingStat } from "@/components/privacy/RotatingStat";
+import { ScrollProgressRail } from "@/components/privacy/ScrollProgressRail";
+import { ChevronDown } from "lucide-react";
 import { useTheme } from "@/hooks/useTheme";
 import { useT } from "@/i18n/LanguageContext";
 import { Linkedin } from "lucide-react";
@@ -47,6 +50,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <ScrollProgressRail />
       <header className="bg-hero border-b border-border">
         <div className="container mx-auto px-4 py-10 md:py-16">
           <div className="flex items-start justify-between gap-4 flex-wrap">
@@ -57,9 +61,10 @@ const Index = () => {
               <h1 className="font-display text-4xl sm:text-5xl md:text-7xl font-black leading-[0.95] text-balance">
                 {t("hero.title.a")}<span className="text-accent">{t("hero.title.accent")}</span>{t("hero.title.b")}
               </h1>
-              <p className="mt-5 text-base md:text-lg text-muted-foreground max-w-2xl text-balance">
-                {t("hero.subtitle", { total: JURISDICTIONS.length, none: noneTotal })}
+              <p className="mt-3 text-sm md:text-base italic text-muted-foreground/90 max-w-2xl">
+                {t("hero.valueprop")}
               </p>
+              <RotatingStat />
             </div>
             <div className="flex items-center gap-2 flex-wrap">
               <ThemeToggle />
@@ -77,6 +82,17 @@ const Index = () => {
           <div className="mt-8">
             <KPICards />
           </div>
+
+          <button
+            onClick={() =>
+              document.querySelector("main")?.scrollIntoView({ behavior: "smooth", block: "start" })
+            }
+            className="mt-10 mx-auto flex flex-col items-center gap-1 text-xs uppercase tracking-[0.25em] text-muted-foreground hover:text-accent transition-colors group"
+            aria-label={t("hero.scrollcue")}
+          >
+            <span>{t("hero.scrollcue")}</span>
+            <ChevronDown className="h-4 w-4 animate-bounce group-hover:text-accent" />
+          </button>
         </div>
       </header>
 

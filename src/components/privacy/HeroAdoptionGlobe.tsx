@@ -112,9 +112,9 @@ export const HeroAdoptionGlobe = ({ total }: Props) => {
         <button
           onClick={() => setAnimating(true)}
           aria-label={t("globe.replay")}
-          className="absolute top-3 right-3 inline-flex items-center justify-center h-8 w-8 bg-background/85 backdrop-blur rounded-full border border-border/60 hover:bg-accent hover:text-accent-foreground transition-colors"
+          className="absolute top-3 right-3 inline-flex items-center gap-1.5 px-3 h-8 bg-background/85 backdrop-blur rounded-full border border-border/60 hover:bg-accent hover:text-accent-foreground transition-colors text-xs font-semibold"
         >
-          <Play className="h-3.5 w-3.5" />
+          {t("globe.replayLabel")}
         </button>
       )}
     </div>
