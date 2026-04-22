@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { BLOCS, Jurisdiction, STATUS_COLOR, STATUS_LABEL } from "@/data/jurisdictions";
 import { Card } from "@/components/ui/card";
+import { useT } from "@/i18n/LanguageContext";
 
 export const BlocExplorer = ({
   data,
@@ -9,6 +10,7 @@ export const BlocExplorer = ({
   data: Jurisdiction[];
   onSelect: (j: Jurisdiction) => void;
 }) => {
+  const { t } = useT();
   const [active, setActive] = useState<string>(BLOCS[0].key);
 
   const members = useMemo(() => {
@@ -29,10 +31,8 @@ export const BlocExplorer = ({
 
   return (
     <Card className="p-5 shadow-soft">
-      <h3 className="font-display text-2xl">Explorador de bloques</h3>
-      <p className="text-xs text-muted-foreground mb-3">
-        Cobertura de privacidad por bloque económico/regional
-      </p>
+      <h3 className="font-display text-2xl">{t("bloc.title")}</h3>
+      <p className="text-xs text-muted-foreground mb-3">{t("bloc.lead")}</p>
 
       <div className="flex flex-wrap gap-1.5 mb-4">
         {BLOCS.map((b) => (
@@ -51,24 +51,18 @@ export const BlocExplorer = ({
       </div>
 
       <div className="grid grid-cols-3 gap-2 mb-4">
-        <Stat label="Miembros" value={stats.total} />
+        <Stat label={t("bloc.members")} value={stats.total} />
         <Stat
-          label="% con ley"
+          label={t("bloc.lawpct")}
           value={stats.total ? `${Math.round((stats.comp / stats.total) * 100)}%` : "—"}
           accent="text-status-comprehensive"
         />
-        <Stat
-          label="Año medio"
-          value={stats.avgYear ?? "—"}
-          accent="text-accent"
-        />
+        <Stat label={t("bloc.avgyear")} value={stats.avgYear ?? "—"} accent="text-accent" />
       </div>
 
       <div className="max-h-[260px] overflow-auto border border-border rounded-lg divide-y divide-border">
         {members.length === 0 && (
-          <div className="p-3 text-xs text-muted-foreground italic">
-            Sin miembros en el filtro actual.
-          </div>
+          <div className="p-3 text-xs text-muted-foreground italic">{t("bloc.empty")}</div>
         )}
         {members.map((m) => (
           <button
@@ -104,7 +98,7 @@ const Stat = ({
   accent?: string;
 }) => (
   <div className="rounded-lg bg-secondary p-2.5">
-    <div className="text-[10px] text-muted-foreground uppercase tracking-wider">{label}</div>
+    <div className="text-[10px] text-muted-foreground uppercase tracking-wider truncate">{label}</div>
     <div className={`font-display text-xl font-black ${accent}`}>{value}</div>
   </div>
 );

@@ -11,8 +11,10 @@ import {
   Cell,
 } from "recharts";
 import { Card } from "@/components/ui/card";
+import { useT } from "@/i18n/LanguageContext";
 
 export const RegionRanking = ({ data }: { data: Jurisdiction[] }) => {
+  const { t, lang } = useT();
   const rows = useMemo(() => {
     const map = new Map<string, { region: string; count: number; sum: number }>();
     data.forEach((d) => {
@@ -27,13 +29,13 @@ export const RegionRanking = ({ data }: { data: Jurisdiction[] }) => {
       .sort((a, b) => a.avg - b.avg);
   }, [data]);
 
+  const latamShort = lang === "es" ? "LatAm & Caribe" : "LatAm & Caribbean";
+
   return (
     <Card className="p-5 shadow-soft">
-      <h3 className="font-display text-2xl">Velocidad de adopción</h3>
-      <p className="text-xs text-muted-foreground mb-3">
-        Año promedio de regulación (más bajo = adoptó antes)
-      </p>
-      <div className="h-72">
+      <h3 className="font-display text-2xl">{t("rr.title")}</h3>
+      <p className="text-xs text-muted-foreground mb-3">{t("rr.lead")}</p>
+      <div className="h-72 md:h-80">
         <ResponsiveContainer>
           <BarChart data={rows} layout="vertical" margin={{ top: 8, right: 16, bottom: 0, left: 0 }}>
             <CartesianGrid stroke="hsl(var(--border))" strokeDasharray="3 3" horizontal={false} />
@@ -47,9 +49,7 @@ export const RegionRanking = ({ data }: { data: Jurisdiction[] }) => {
               dataKey="region"
               width={140}
               tick={{ fontSize: 11, fill: "hsl(var(--foreground))" }}
-              tickFormatter={(v) =>
-                v === "Latin America and the Caribbean" ? "LatAm & Caribe" : v
-              }
+              tickFormatter={(v) => (v === "Latin America and the Caribbean" ? latamShort : v)}
             />
             <Tooltip
               contentStyle={{

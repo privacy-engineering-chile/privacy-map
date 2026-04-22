@@ -12,6 +12,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowUpDown, Download } from "lucide-react";
+import { useT } from "@/i18n/LanguageContext";
 
 type SortKey = "jurisdiction" | "region" | "subRegion" | "year" | "lawStatus";
 
@@ -22,6 +23,7 @@ export const JurisdictionsTable = ({
   data: Jurisdiction[];
   onSelect: (j: Jurisdiction) => void;
 }) => {
+  const { t } = useT();
   const [sort, setSort] = useState<{ key: SortKey; dir: "asc" | "desc" }>({
     key: "year",
     dir: "desc",
@@ -74,24 +76,24 @@ export const JurisdictionsTable = ({
 
   return (
     <Card className="p-5 shadow-soft">
-      <div className="flex items-center justify-between mb-3">
+      <div className="flex items-center justify-between mb-3 gap-2 flex-wrap">
         <div>
-          <h3 className="font-display text-2xl">Datos</h3>
-          <p className="text-xs text-muted-foreground">{sorted.length} resultados según filtros</p>
+          <h3 className="font-display text-2xl">{t("jt.title")}</h3>
+          <p className="text-xs text-muted-foreground">{t("jt.results", { n: sorted.length })}</p>
         </div>
         <Button variant="outline" size="sm" onClick={exportCSV}>
-          <Download className="h-4 w-4" /> Exportar CSV
+          <Download className="h-4 w-4" /> {t("jt.export")}
         </Button>
       </div>
       <div className="max-h-[480px] overflow-auto rounded-lg border border-border">
         <Table>
           <TableHeader className="sticky top-0 bg-card z-10">
             <TableRow>
-              <Th k="jurisdiction">Jurisdicción</Th>
-              <Th k="region">Región</Th>
-              <Th k="subRegion">Sub-región</Th>
-              <Th k="year">Año</Th>
-              <Th k="lawStatus">Estatus</Th>
+              <Th k="jurisdiction">{t("jt.col.juris")}</Th>
+              <Th k="region">{t("jt.col.region")}</Th>
+              <Th k="subRegion">{t("jt.col.sub")}</Th>
+              <Th k="year">{t("jt.col.year")}</Th>
+              <Th k="lawStatus">{t("jt.col.status")}</Th>
             </TableRow>
           </TableHeader>
           <TableBody>

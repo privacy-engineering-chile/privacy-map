@@ -22,6 +22,7 @@ import { ExternalLink, FileDown, Building2, Share2, Download } from "lucide-reac
 import { downloadCountryCard, shareCountryCard } from "@/lib/generateCountryCard";
 import { useState } from "react";
 import { toast } from "@/hooks/use-toast";
+import { useT } from "@/i18n/LanguageContext";
 
 interface Props {
   country: Jurisdiction | null;
@@ -39,6 +40,7 @@ const ISO_TO_FLAG = (iso3?: string | null) => {
 };
 
 export const CountryDetailDrawer = ({ country, onClose }: Props) => {
+  const { t } = useT();
   const [busy, setBusy] = useState(false);
   if (!country) return null;
 
@@ -48,7 +50,7 @@ export const CountryDetailDrawer = ({ country, onClose }: Props) => {
     try {
       await shareCountryCard(country);
     } catch (e) {
-      toast({ title: "No se pudo compartir", description: "Intenta descargar la imagen." });
+      toast({ title: t("dr.toast.shareFail"), description: t("dr.toast.shareFailDesc") });
     } finally {
       setBusy(false);
     }
@@ -59,7 +61,7 @@ export const CountryDetailDrawer = ({ country, onClose }: Props) => {
     setBusy(true);
     try {
       await downloadCountryCard(country);
-      toast({ title: "Tarjeta descargada", description: `${country.jurisdiction}.png` });
+      toast({ title: t("dr.toast.downloaded"), description: `${country.jurisdiction}.png` });
     } finally {
       setBusy(false);
     }
@@ -109,9 +111,9 @@ export const CountryDetailDrawer = ({ country, onClose }: Props) => {
           </Badge>
           <div className="flex gap-1.5">
             <Button size="sm" variant="outline" onClick={handleShare} disabled={busy}>
-              <Share2 className="h-3.5 w-3.5" /> Compartir
+              <Share2 className="h-3.5 w-3.5" /> {t("dr.share")}
             </Button>
-            <Button size="sm" variant="ghost" onClick={handleDownload} disabled={busy} aria-label="Descargar tarjeta">
+            <Button size="sm" variant="ghost" onClick={handleDownload} disabled={busy} aria-label={t("dr.download")}>
               <Download className="h-3.5 w-3.5" />
             </Button>
           </div>
@@ -121,14 +123,14 @@ export const CountryDetailDrawer = ({ country, onClose }: Props) => {
         {country.keyLawName ? (
           <div className="mt-4 rounded-xl border border-border p-4 bg-card">
             <div className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
-              Ley clave {country.keyLawYear ? `· ${country.keyLawYear}` : ""}
+              {t("dr.keylaw")} {country.keyLawYear ? `· ${country.keyLawYear}` : ""}
             </div>
             <div className="text-sm font-medium leading-snug">{country.keyLawName}</div>
             <div className="flex gap-2 mt-3">
               {country.keyLawLink && (
                 <Button asChild variant="outline" size="sm">
                   <a href={country.keyLawLink} target="_blank" rel="noreferrer">
-                    <ExternalLink className="h-3.5 w-3.5" /> Sitio
+                    <ExternalLink className="h-3.5 w-3.5" /> {t("dr.site")}
                   </a>
                 </Button>
               )}
@@ -144,7 +146,7 @@ export const CountryDetailDrawer = ({ country, onClose }: Props) => {
         ) : (
           <div className="mt-4 rounded-xl border border-dashed border-status-none/50 p-4 bg-status-none/5">
             <div className="text-sm text-status-none font-medium">
-              Sin ley integral de protección de datos identificada.
+              {t("dr.nokeylaw")}
             </div>
           </div>
         )}
@@ -153,14 +155,14 @@ export const CountryDetailDrawer = ({ country, onClose }: Props) => {
         {country.firstLawName && country.firstLawName !== country.keyLawName && (
           <div className="mt-3 rounded-xl border border-border p-4">
             <div className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
-              Primera ley {country.firstLawYear ? `· ${country.firstLawYear}` : ""}
+              {t("dr.firstlaw")} {country.firstLawYear ? `· ${country.firstLawYear}` : ""}
             </div>
             <div className="text-sm leading-snug">{country.firstLawName}</div>
             <div className="flex gap-2 mt-3">
               {country.firstLawLink && (
                 <Button asChild variant="ghost" size="sm">
                   <a href={country.firstLawLink} target="_blank" rel="noreferrer">
-                    <ExternalLink className="h-3.5 w-3.5" /> Sitio
+                    <ExternalLink className="h-3.5 w-3.5" /> {t("dr.site")}
                   </a>
                 </Button>
               )}
@@ -178,7 +180,7 @@ export const CountryDetailDrawer = ({ country, onClose }: Props) => {
         {/* DPA */}
         <div className="mt-3 rounded-xl border border-border p-4">
           <div className="text-xs text-muted-foreground uppercase tracking-wider mb-1 flex items-center gap-1.5">
-            <Building2 className="h-3 w-3" /> Autoridad de Protección
+            <Building2 className="h-3 w-3" /> {t("dr.dpa")}
           </div>
           {country.hasDPA ? (
             <>
@@ -186,13 +188,13 @@ export const CountryDetailDrawer = ({ country, onClose }: Props) => {
               {country.dpaLink && (
                 <Button asChild variant="outline" size="sm" className="mt-2">
                   <a href={country.dpaLink} target="_blank" rel="noreferrer">
-                    <ExternalLink className="h-3.5 w-3.5" /> Sitio oficial
+                    <ExternalLink className="h-3.5 w-3.5" /> {t("dr.dpa.site")}
                   </a>
                 </Button>
               )}
             </>
           ) : (
-            <div className="text-sm text-muted-foreground italic">Sin DPA aparente.</div>
+            <div className="text-sm text-muted-foreground italic">{t("dr.dpa.none")}</div>
           )}
         </div>
 
@@ -200,7 +202,7 @@ export const CountryDetailDrawer = ({ country, onClose }: Props) => {
         {activeTreaties.length > 0 && (
           <div className="mt-3 rounded-xl border border-border p-4">
             <div className="text-xs text-muted-foreground uppercase tracking-wider mb-2">
-              Tratados y redes
+              {t("dr.treaties")}
             </div>
             <div className="flex flex-wrap gap-1.5">
               {CORE_TREATIES.filter((t) => country.treaties[t]).map((t) => (
@@ -225,7 +227,7 @@ export const CountryDetailDrawer = ({ country, onClose }: Props) => {
         {country.otherLaws && (
           <div className="mt-3 rounded-xl bg-secondary p-4">
             <div className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
-              Otras leyes notables
+              {t("dr.other")}
             </div>
             <div className="text-xs leading-relaxed whitespace-pre-line">{country.otherLaws}</div>
           </div>
@@ -233,7 +235,7 @@ export const CountryDetailDrawer = ({ country, onClose }: Props) => {
         {country.legislativeNotes && (
           <div className="mt-3 rounded-xl bg-secondary p-4">
             <div className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
-              Actualizaciones legislativas
+              {t("dr.notes")}
             </div>
             <div className="text-xs leading-relaxed whitespace-pre-line">
               {country.legislativeNotes}
@@ -244,11 +246,9 @@ export const CountryDetailDrawer = ({ country, onClose }: Props) => {
         {rank && (
           <div className="mt-4 rounded-xl border border-border p-4">
             <div className="text-xs text-muted-foreground uppercase tracking-wider">
-              Posición cronológica
+              {t("dr.rank")}
             </div>
-            <div className="mt-1 text-sm">
-              País <strong>#{rank}</strong> en adoptar regulación integral.
-            </div>
+            <div className="mt-1 text-sm" dangerouslySetInnerHTML={{ __html: t("dr.rank.text", { n: rank }).replace(/#(\d+)/, "<strong>#$1</strong>") }} />
           </div>
         )}
       </SheetContent>

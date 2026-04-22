@@ -4,6 +4,7 @@ import { ISO2_TO_ISO3, isoToFlag } from "@/lib/iso2to3";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { X, MapPin } from "lucide-react";
+import { useT } from "@/i18n/LanguageContext";
 
 interface Props {
   onSelect: (j: Jurisdiction) => void;
@@ -12,6 +13,7 @@ interface Props {
 const SESSION_KEY = "privacy-atlas-yourcountry-dismissed";
 
 export const YourCountryCard = ({ onSelect }: Props) => {
+  const { t } = useT();
   const [country, setCountry] = useState<Jurisdiction | null>(null);
   const [iso2, setIso2] = useState<string>("");
   const [dismissed, setDismissed] = useState<boolean>(() =>
@@ -49,16 +51,16 @@ export const YourCountryCard = ({ onSelect }: Props) => {
   if (dismissed || !country) return null;
 
   return (
-    <Card className="w-[300px] p-4 shadow-pop border-accent/30 bg-card/95 backdrop-blur animate-fade-up relative">
+    <Card className="w-full lg:w-[300px] p-4 shadow-pop border-accent/30 bg-card/95 backdrop-blur animate-fade-up relative">
       <button
         onClick={dismiss}
         className="absolute top-2 right-2 text-muted-foreground hover:text-foreground"
-        aria-label="Cerrar"
+        aria-label={t("you.close")}
       >
         <X className="h-3.5 w-3.5" />
       </button>
       <div className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-accent font-bold">
-        <MapPin className="h-3 w-3" /> Tu ubicación
+        <MapPin className="h-3 w-3" /> {t("you.location")}
       </div>
       <div className="flex items-center gap-2 mt-2">
         <span className="text-3xl">{isoToFlag(iso2)}</span>
@@ -82,7 +84,7 @@ export const YourCountryCard = ({ onSelect }: Props) => {
         className="w-full mt-3"
         onClick={() => onSelect(country)}
       >
-        Ver detalle
+        {t("you.viewDetail")}
       </Button>
     </Card>
   );
