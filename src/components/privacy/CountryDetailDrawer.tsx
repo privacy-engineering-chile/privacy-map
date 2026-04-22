@@ -18,7 +18,10 @@ import {
 } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ExternalLink, FileDown, Building2 } from "lucide-react";
+import { ExternalLink, FileDown, Building2, Share2, Download } from "lucide-react";
+import { downloadCountryCard, shareCountryCard } from "@/lib/generateCountryCard";
+import { useState } from "react";
+import { toast } from "@/hooks/use-toast";
 
 interface Props {
   country: Jurisdiction | null;
@@ -36,7 +39,31 @@ const ISO_TO_FLAG = (iso3?: string | null) => {
 };
 
 export const CountryDetailDrawer = ({ country, onClose }: Props) => {
+  const [busy, setBusy] = useState(false);
   if (!country) return null;
+
+  const handleShare = async () => {
+    if (busy) return;
+    setBusy(true);
+    try {
+      await shareCountryCard(country);
+    } catch (e) {
+      toast({ title: "No se pudo compartir", description: "Intenta descargar la imagen." });
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const handleDownload = async () => {
+    if (busy) return;
+    setBusy(true);
+    try {
+      await downloadCountryCard(country);
+      toast({ title: "Tarjeta descargada", description: `${country.jurisdiction}.png` });
+    } finally {
+      setBusy(false);
+    }
+  };
 
   const sorted = JURISDICTIONS.filter((j) => j.lawStatus === "comprehensive" && j.firstLawYear).sort(
     (a, b) => (a.firstLawYear ?? 9999) - (b.firstLawYear ?? 9999),
@@ -73,13 +100,21 @@ export const CountryDetailDrawer = ({ country, onClose }: Props) => {
         </SheetHeader>
 
         {/* Status badge */}
-        <div className="mt-5">
+        <div className="mt-5 flex items-center justify-between gap-2 flex-wrap">
           <Badge
             className="text-xs"
             style={{ background: STATUS_COLOR[country.lawStatus], color: "white" }}
           >
             {STATUS_LABEL[country.lawStatus]}
           </Badge>
+          <div className="flex gap-1.5">
+            <Button size="sm" variant="outline" onClick={handleShare} disabled={busy}>
+              <Share2 className="h-3.5 w-3.5" /> Compartir
+            </Button>
+            <Button size="sm" variant="ghost" onClick={handleDownload} disabled={busy} aria-label="Descargar tarjeta">
+              <Download className="h-3.5 w-3.5" />
+            </Button>
+          </div>
         </div>
 
         {/* Key law */}

@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Jurisdiction, JURISDICTIONS } from "@/data/jurisdictions";
 import { useFilters } from "@/hooks/useFilters";
 import { KPICards } from "@/components/privacy/KPICards";
@@ -20,11 +20,27 @@ import { BlocExplorer } from "@/components/privacy/BlocExplorer";
 import { ChapterHeading } from "@/components/privacy/ChapterHeading";
 import { AdoptionPlayback } from "@/components/privacy/AdoptionPlayback";
 import { CountryComparator } from "@/components/privacy/CountryComparator";
+import { HeroAdoptionGlobe } from "@/components/privacy/HeroAdoptionGlobe";
+import { YourCountryCard } from "@/components/privacy/YourCountryCard";
+import { TravelRiskTool } from "@/components/privacy/TravelRiskTool";
+import { ThemeToggle } from "@/components/privacy/ThemeToggle";
+import { useTheme } from "@/hooks/useTheme";
 
 const Index = () => {
   const { filters, setFilters, filtered, reset } = useFilters();
   const [selected, setSelected] = useState<Jurisdiction | null>(null);
   const mapRef = useRef<HTMLDivElement>(null);
+  useTheme(); // initialize/persist theme on mount
+
+  // Deep-link: ?country=ISO3 opens drawer
+  useEffect(() => {
+    const p = new URLSearchParams(window.location.search);
+    const iso = p.get("country");
+    if (iso) {
+      const found = JURISDICTIONS.find((j) => j.iso3 === iso);
+      if (found) setSelected(found);
+    }
+  }, []);
 
   const sidsNoLaw = JURISDICTIONS.filter((j) => j.sids && j.lawStatus === "none").length;
 
@@ -49,10 +65,18 @@ const Index = () => {
                 que aún no protegen los datos personales.
               </p>
             </div>
-            <ExportButtons mapRef={mapRef} />
+            <div className="flex items-center gap-2">
+              <ThemeToggle />
+              <ExportButtons mapRef={mapRef} />
+            </div>
           </div>
 
-          <div className="mt-10">
+          <div className="mt-10 grid lg:grid-cols-[1fr_320px] gap-6 items-start">
+            <HeroAdoptionGlobe total={JURISDICTIONS.length} />
+            <YourCountryCard onSelect={setSelected} />
+          </div>
+
+          <div className="mt-8">
             <KPICards />
           </div>
         </div>
@@ -137,6 +161,11 @@ const Index = () => {
             <SubRegionTreemap data={filtered} />
             <RegionRanking data={filtered} />
           </div>
+        </section>
+
+        {/* Travel Risk — bridge between equity and data */}
+        <section className="animate-fade-up">
+          <TravelRiskTool />
         </section>
 
         {/* CHAPTER 5 — Data */}
