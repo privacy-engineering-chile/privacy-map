@@ -184,6 +184,15 @@ export const dict: Dict = {
   // Footer
   "ft.builtby":              { es: "Construido por",                                  en: "Built by" },
   "ft.privacy":              { es: "Sin datos · Sin cookies · Sin analytics.",        en: "No data · No cookies · No analytics." },
+
+  // Hero rotating stats & cues
+  "hero.valueprop":          { es: "50 años de leyes de privacidad, en una sola pantalla. Sin login, sin cookies, sin tracking.", en: "50 years of privacy law, on one screen. No login, no cookies, no tracking." },
+  "hero.scrollcue":          { es: "Recorre el atlas",                                en: "Scroll the atlas" },
+  "hero.rotate.1":           { es: "{comp} de {total} países tienen una ley integral de privacidad.", en: "{comp} of {total} countries have a comprehensive privacy law." },
+  "hero.rotate.2":           { es: "Aún hay {none} jurisdicciones sin ley alguna de protección.", en: "{none} jurisdictions still have no data protection law at all." },
+  "hero.rotate.3":           { es: "{dpa} países cuentan con una autoridad de protección activa.", en: "{dpa} countries have an active data protection authority." },
+  "hero.rotate.4":           { es: "El primer país en legislar lo hizo en {pioneerYear}. El más reciente, en {recentYear}.", en: "The first country legislated in {pioneerYear}. The most recent, in {recentYear}." },
+  "globe.replayLabel":       { es: "▶ Repetir 1973 → 2024",                            en: "▶ Replay 1973 → 2024" },
 };
 
 export const tFormat = (s: string, vars?: Record<string, string | number>) => {
