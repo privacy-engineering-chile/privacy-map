@@ -58,26 +58,26 @@ export const TreatyMatrix = ({
         </select>
       </div>
 
-      <div className="overflow-x-auto max-h-[520px]">
-        <table className="w-full text-xs">
+      <div className="overflow-x-auto max-h-[560px]">
+        <table className="text-sm border-separate border-spacing-0" style={{ width: "auto" }}>
           <thead className="sticky top-0 bg-card z-10">
             <tr className="h-32 align-bottom">
-              <th className="text-left py-2 px-2 font-medium text-muted-foreground align-bottom min-w-[160px]">
+              <th className="text-left py-2 pl-2 pr-3 font-medium text-muted-foreground align-bottom w-[180px]">
                 {t("tm.country")}
               </th>
               {CORE_TREATIES.map((tk) => (
                 <th
                   key={tk}
-                  className="px-1 pb-2 font-medium text-muted-foreground align-bottom"
-                  style={{ height: "120px", minWidth: "32px" }}
+                  className="px-0 pb-2 font-medium text-muted-foreground align-bottom"
+                  style={{ height: "120px", width: "38px" }}
                 >
                   <div className="flex justify-center items-end h-full">
                     <span
-                      className="inline-block whitespace-nowrap text-[11px] leading-none"
+                      className="inline-block whitespace-nowrap text-[12px] leading-none"
                       style={{
                         transform: "rotate(-55deg)",
                         transformOrigin: "left bottom",
-                        translate: "10px 0",
+                        translate: "12px 0",
                       }}
                     >
                       {TREATY_LABELS[tk]}
@@ -94,22 +94,24 @@ export const TreatyMatrix = ({
                 onClick={() => onSelect(j)}
                 className="cursor-pointer hover:bg-secondary/60 border-t border-border"
               >
-                <td className="py-1.5 px-2 flex items-center gap-2">
-                  <span
-                    className="h-2 w-2 rounded-full shrink-0"
-                    style={{ background: REGION_COLORS[j.region] }}
-                  />
-                  <span className="truncate">{j.jurisdiction}</span>
+                <td className="py-2 pl-2 pr-3 border-t border-border w-[180px]">
+                  <div className="flex items-center gap-2">
+                    <span
+                      className="h-2.5 w-2.5 rounded-full shrink-0"
+                      style={{ background: REGION_COLORS[j.region] }}
+                    />
+                    <span className="truncate text-sm">{j.jurisdiction}</span>
+                  </div>
                 </td>
                 {CORE_TREATIES.map((tk) => (
-                  <td key={tk} className="text-center px-1">
+                  <td key={tk} className="text-center px-0 border-t border-border" style={{ width: "38px" }}>
                     {j.treaties[tk] ? (
                       <span
-                        className="inline-block h-3.5 w-3.5 rounded-sm"
+                        className="inline-block h-4 w-4 rounded-sm"
                         style={{ background: "hsl(var(--status-treaty))" }}
                       />
                     ) : (
-                      <span className="inline-block h-3.5 w-3.5 rounded-sm bg-muted opacity-40" />
+                      <span className="inline-block h-4 w-4 rounded-sm bg-muted opacity-40" />
                     )}
                   </td>
                 ))}
@@ -118,7 +120,7 @@ export const TreatyMatrix = ({
           </tbody>
         </table>
       </div>
-      <p className="text-[10px] text-muted-foreground mt-2">{t("tm.footer")}</p>
+      <p className="text-xs text-muted-foreground mt-2">{t("tm.footer")}</p>
     </Card>
   );
 };
