@@ -22,6 +22,9 @@ import { TravelRiskTool } from "@/components/privacy/TravelRiskTool";
 import { ThemeToggle } from "@/components/privacy/ThemeToggle";
 import { LanguageToggle } from "@/components/privacy/LanguageToggle";
 import { PrivacyBadge } from "@/components/privacy/PrivacyBadge";
+import { RotatingStat } from "@/components/privacy/RotatingStat";
+import { ScrollProgressRail } from "@/components/privacy/ScrollProgressRail";
+import { ChevronDown } from "lucide-react";
 import { useTheme } from "@/hooks/useTheme";
 import { useT } from "@/i18n/LanguageContext";
 import { Linkedin } from "lucide-react";
@@ -57,9 +60,10 @@ const Index = () => {
               <h1 className="font-display text-4xl sm:text-5xl md:text-7xl font-black leading-[0.95] text-balance">
                 {t("hero.title.a")}<span className="text-accent">{t("hero.title.accent")}</span>{t("hero.title.b")}
               </h1>
-              <p className="mt-5 text-base md:text-lg text-muted-foreground max-w-2xl text-balance">
-                {t("hero.subtitle", { total: JURISDICTIONS.length, none: noneTotal })}
+              <p className="mt-3 text-sm md:text-base italic text-muted-foreground/90 max-w-2xl">
+                {t("hero.valueprop")}
               </p>
+              <RotatingStat />
             </div>
             <div className="flex items-center gap-2 flex-wrap">
               <ThemeToggle />
