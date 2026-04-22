@@ -163,6 +163,11 @@ const Index = () => {
           </div>
         </section>
 
+        {/* Travel Risk — bridge between equity and data */}
+        <section className="animate-fade-up">
+          <TravelRiskTool />
+        </section>
+
         {/* CHAPTER 5 — Data */}
         <section className="animate-fade-up">
           <ChapterHeading
