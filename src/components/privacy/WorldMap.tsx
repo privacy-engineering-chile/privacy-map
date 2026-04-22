@@ -61,7 +61,7 @@ export const WorldMap = forwardRef<HTMLDivElement, Props>(
     return (
       <div
         ref={ref}
-        className="relative w-full bg-card rounded-2xl shadow-soft overflow-hidden border border-border"
+        className="relative w-full bg-card overflow-hidden"
       >
         <ComposableMap
           projectionConfig={{ scale: 155 }}
