@@ -50,6 +50,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <ScrollProgressRail />
       <header className="bg-hero border-b border-border">
         <div className="container mx-auto px-4 py-10 md:py-16">
           <div className="flex items-start justify-between gap-4 flex-wrap">
