@@ -159,9 +159,6 @@ const Index = () => {
             <DevelopmentEquity data={filtered} />
             <BlocExplorer data={filtered} onSelect={setSelected} />
           </div>
-          <div className="mt-6">
-            <IsoRegionStacks data={filtered} />
-          </div>
           <div className="grid lg:grid-cols-2 gap-6 mt-6">
             <SubRegionTreemap data={filtered} />
             <RegionRanking data={filtered} />
