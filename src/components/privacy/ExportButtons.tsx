@@ -2,9 +2,11 @@ import { RefObject, useState } from "react";
 import { toPng } from "html-to-image";
 import { Button } from "@/components/ui/button";
 import { Camera, Link2, Check } from "lucide-react";
+import { useT } from "@/i18n/LanguageContext";
 
 export const ExportButtons = ({ mapRef }: { mapRef: RefObject<HTMLDivElement> }) => {
   const [copied, setCopied] = useState(false);
+  const { t } = useT();
 
   const exportPNG = async () => {
     if (!mapRef.current) return;
@@ -23,12 +25,12 @@ export const ExportButtons = ({ mapRef }: { mapRef: RefObject<HTMLDivElement> })
 
   return (
     <div className="flex gap-2">
-      <Button variant="outline" size="sm" onClick={exportPNG}>
-        <Camera className="h-4 w-4" /> PNG del mapa
+      <Button variant="outline" size="sm" onClick={exportPNG} className="h-10">
+        <Camera className="h-4 w-4" /> <span className="hidden sm:inline">{t("exp.png")}</span>
       </Button>
-      <Button size="sm" onClick={copyLink} className="bg-accent-gradient">
+      <Button size="sm" onClick={copyLink} className="bg-accent-gradient h-10">
         {copied ? <Check className="h-4 w-4" /> : <Link2 className="h-4 w-4" />}
-        {copied ? "¡Copiado!" : "Compartir vista"}
+        <span className="hidden sm:inline">{copied ? t("exp.copied") : t("exp.share")}</span>
       </Button>
     </div>
   );
