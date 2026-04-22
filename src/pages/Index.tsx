@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Jurisdiction, JURISDICTIONS } from "@/data/jurisdictions";
 import { useFilters } from "@/hooks/useFilters";
 import { KPICards } from "@/components/privacy/KPICards";
@@ -20,11 +20,27 @@ import { BlocExplorer } from "@/components/privacy/BlocExplorer";
 import { ChapterHeading } from "@/components/privacy/ChapterHeading";
 import { AdoptionPlayback } from "@/components/privacy/AdoptionPlayback";
 import { CountryComparator } from "@/components/privacy/CountryComparator";
+import { HeroAdoptionGlobe } from "@/components/privacy/HeroAdoptionGlobe";
+import { YourCountryCard } from "@/components/privacy/YourCountryCard";
+import { TravelRiskTool } from "@/components/privacy/TravelRiskTool";
+import { ThemeToggle } from "@/components/privacy/ThemeToggle";
+import { useTheme } from "@/hooks/useTheme";
 
 const Index = () => {
   const { filters, setFilters, filtered, reset } = useFilters();
   const [selected, setSelected] = useState<Jurisdiction | null>(null);
   const mapRef = useRef<HTMLDivElement>(null);
+  useTheme(); // initialize/persist theme on mount
+
+  // Deep-link: ?country=ISO3 opens drawer
+  useEffect(() => {
+    const p = new URLSearchParams(window.location.search);
+    const iso = p.get("country");
+    if (iso) {
+      const found = JURISDICTIONS.find((j) => j.iso3 === iso);
+      if (found) setSelected(found);
+    }
+  }, []);
 
   const sidsNoLaw = JURISDICTIONS.filter((j) => j.sids && j.lawStatus === "none").length;
 
