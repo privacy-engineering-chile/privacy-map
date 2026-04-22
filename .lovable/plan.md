@@ -1,40 +1,83 @@
 
-User picked the "New analyses" bundle: Sankey region→treaty + animated timeline + country comparison. Let me design concisely.
+# 🚀 Top 4 Wow Moments — Build Plan
 
-**1. Sankey Region → Treaty** (Chapter 2)
-- Use a lightweight SVG sankey via `d3-sankey` (already have d3-scale; add `d3-sankey`).
-- Nodes: regions (left) + 6 core treaties (right). Links weighted by # of member countries.
-- Colored by region on left side; treaty color on right. Hover highlights flow + tooltip with count.
-- Place alongside (or replacing) `TreatyRegionStacks` — keep stacks as toggle.
+Implementing the four highest-impact additions to Privacy Atlas v2, designed to feel cohesive (not bolted on) and to land the "whoa" reaction in the first 10 seconds.
 
-**2. Animated Timeline / Map playback** (new component, top of Chapter 3 or as map overlay)
-- Play/Pause + year scrubber (1973 → 2025).
-- As year advances, countries "light up" on a mini world map when their `year <= currentYear`.
-- Counter shows cumulative jurisdictions with law. Speed control (1x/2x/4x).
-- Component: `AdoptionPlayback.tsx` — reuses react-simple-maps with filtered fill logic per year.
+---
 
-**3. Country comparator** (new chapter or Chapter 5 prelude)
-- Pick up to 4 countries (searchable multi-select chips).
-- Side-by-side cards: flag, region, law status badge, key law name+year, first law year, DPA, treaty grid (6 dots), dev flags.
-- A small bar showing law age (years since key law) for visual diff.
-- URL-syncs the selection (`?cmp=USA,BRA,DEU,JPN`).
-- Component: `CountryComparator.tsx` + integration in `Index.tsx`.
+## 1. 🌍 Hero Adoption Globe
 
-**Tech additions**
-- `d3-sankey` package.
-- New chapter heading "06 — Compara países" OR insert comparator inside chapter 5.
-- Extend `useFilters` only for the comparator selection (or keep separate URL param to avoid coupling).
+Replace the static hero block with a **live SVG world that lights up year by year** (1973 → 2025) over ~6 seconds, then settles on "today".
 
-**Files to create**
-- `src/components/privacy/RegionTreatySankey.tsx`
-- `src/components/privacy/AdoptionPlayback.tsx`
-- `src/components/privacy/CountryComparator.tsx`
+- New component `HeroAdoptionGlobe.tsx` using `react-simple-maps` (already installed) with an orthographic-style projection sized for the hero band (~500×320).
+- Countries start dimmed (`hsl(var(--muted) / 0.15)`); when their `firstLawYear <= currentYear`, they animate to their region color via a 400 ms CSS transition.
+- A thin progress rail under the headline shows the year ticking; a counter below the H1 morphs from "0 jurisdicciones protegen tus datos" → final count.
+- `requestAnimationFrame` driven, auto-plays on mount, replays on click.
+- Headline keeps current copy but the accent word "datos" pulses in sync with each new country lighting up.
 
-**Files to edit**
-- `src/pages/Index.tsx` — wire 3 new sections.
-- `package.json` — add `d3-sankey` + types.
+## 2. 📍 Auto-Detect "Your Country" + Travel Risk
+
+A floating card top-right of the hero, plus a compact tool above Chapter 5.
+
+**A. Geolocation card** (`YourCountryCard.tsx`)
+- On mount, `fetch("https://ipapi.co/json/")` (no key needed, free CORS endpoint, ~50 ms).
+- Match returned `country_code` against `JURISDICTIONS[].iso3` (convert ISO2 → ISO3 via small lookup or use `country_code_iso3` field from ipapi).
+- Render a 320×auto card: flag emoji, "Tu ubicación: 🇲🇽 México", status pill, key-law line, a CTA *"Ver detalle"* that opens the existing `CountryDetailDrawer`.
+- Graceful fallback: hide silently if fetch fails or country not in dataset. Dismissible (stored in `sessionStorage`).
+
+**B. Travel Risk mini-tool** (`TravelRiskTool.tsx`, new chapter 4½ block or top of Chapter 5)
+- Two searchable selects: *Origen* → *Destino* (defaults to detected country → US).
+- Compute a 0-100 "data safety drop" score:
+  - Origin status weight (none=0, sectoral=40, comprehensive=80) + DPA bonus (+10) + treaty bonus (+10).
+  - Same for destination. Drop = max(0, originScore − destScore).
+- Verdict card with color-coded badge (`safe / caution / risk`), one-line plain-language explanation, and a treaty-overlap chip row ("Ambos en CoE 108+: tu data viaja con garantías").
+- URL-syncs `?from=DEU&to=USA`.
+
+## 3. 🌓 Dark/Light Mode with Color Morph
+
+- Add `ThemeToggle.tsx` (sun/moon icon, top-right header) using a tiny `useTheme` hook persisted in `localStorage`.
+- Add a `.light` class with overrides in `index.css`. The base palette already lives in CSS variables, so we redefine them under `:root.light { --background: ... }`.
+- The "morph" effect: add `transition: background-color 600ms, color 600ms, fill 600ms, stroke 600ms` to `body, svg path, .card` selectors so the swap interpolates smoothly instead of snapping.
+- Region/status/treaty colors keep their hue but adjust lightness for legibility on light bg (defined as separate vars `--status-comprehensive-light`, etc., consumed via `light-dark()` fallback or a second variable set).
+- Map, charts, Sankey, scatter all already read from CSS vars → no per-component changes needed beyond auditing 2-3 hardcoded colors.
+
+## 4. 📸 Shareable Country Card
+
+In `CountryDetailDrawer`, add a *"Compartir tarjeta"* button that generates a 1080×1080 PNG.
+
+- New util `generateCountryCard.ts`: uses HTML5 `<canvas>` (no extra deps) to draw:
+  - Top band in the country's region color, big flag emoji + country name in `font-display`.
+  - Status badge, key-law name + year, DPA chip, 6 treaty dots (filled if member).
+  - Footer: "privacy-map.lovable.app" + a small auto-generated QR (via tiny `qrcode` lib, ~6 KB, added to deps) pointing to `/?country=ISO3`.
+  - Background: subtle dotted grid in muted color, accent corner triangle.
+- Two actions: **Download PNG** (canvas → blob → `<a download>`) and **Share** (uses `navigator.share` with the blob on mobile; falls back to download on desktop).
+- Drawer also gets a deep-link `?country=` param so the existing single-country URL works as the share target.
+
+---
+
+## Technical changes
+
+**New files**
+- `src/components/privacy/HeroAdoptionGlobe.tsx`
+- `src/components/privacy/YourCountryCard.tsx`
+- `src/components/privacy/TravelRiskTool.tsx`
+- `src/components/privacy/ThemeToggle.tsx`
+- `src/hooks/useTheme.ts`
+- `src/lib/generateCountryCard.ts`
+- `src/lib/iso2to3.ts` (small lookup table for geolocation)
+
+**Edited**
+- `src/pages/Index.tsx` — mount globe in hero, add `YourCountryCard`, `ThemeToggle` in header, `TravelRiskTool` block, read `?country=` on mount to open drawer.
+- `src/components/privacy/CountryDetailDrawer.tsx` — add share buttons + render preview thumbnail.
+- `src/index.css` — `.light` palette, smooth color transitions, optional brighter region tints for light mode.
+- `package.json` — add `qrcode` (+ `@types/qrcode`).
 
 **Out of scope**
-- Dark mode, Chapter Nav, AI features (offered separately).
+- Sonification, force-directed network, scroll-pinned map, leaderboards, OG image generation (server-side).
+- Any backend — geolocation uses public IP API with no key.
 
-Plan is concrete and bounded. Present.
+**Edge cases handled**
+- ipapi quota exceeded / blocked → card stays hidden, no UI shift.
+- User country not in dataset → card shows "Tu jurisdicción no está en el atlas todavía".
+- Reduced motion preference → globe skips animation and renders final state immediately.
+- Light mode is opt-in; dark stays default to preserve current visual identity.
