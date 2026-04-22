@@ -22,7 +22,7 @@ import { AdoptionPlayback } from "@/components/privacy/AdoptionPlayback";
 import { CountryComparator } from "@/components/privacy/CountryComparator";
 import { HeroGlobeSwitcher } from "@/components/privacy/HeroGlobeSwitcher";
 import { YourCountryCard } from "@/components/privacy/YourCountryCard";
-import { IsoRegionStacks } from "@/components/privacy/IsoRegionStacks";
+
 
 import { TravelRiskTool } from "@/components/privacy/TravelRiskTool";
 import { ThemeToggle } from "@/components/privacy/ThemeToggle";
