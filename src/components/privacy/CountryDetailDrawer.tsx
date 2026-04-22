@@ -39,7 +39,31 @@ const ISO_TO_FLAG = (iso3?: string | null) => {
 };
 
 export const CountryDetailDrawer = ({ country, onClose }: Props) => {
+  const [busy, setBusy] = useState(false);
   if (!country) return null;
+
+  const handleShare = async () => {
+    if (busy) return;
+    setBusy(true);
+    try {
+      await shareCountryCard(country);
+    } catch (e) {
+      toast({ title: "No se pudo compartir", description: "Intenta descargar la imagen." });
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const handleDownload = async () => {
+    if (busy) return;
+    setBusy(true);
+    try {
+      await downloadCountryCard(country);
+      toast({ title: "Tarjeta descargada", description: `${country.jurisdiction}.png` });
+    } finally {
+      setBusy(false);
+    }
+  };
 
   const sorted = JURISDICTIONS.filter((j) => j.lawStatus === "comprehensive" && j.firstLawYear).sort(
     (a, b) => (a.firstLawYear ?? 9999) - (b.firstLawYear ?? 9999),
