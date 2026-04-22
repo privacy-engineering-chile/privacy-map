@@ -10,16 +10,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useT } from "@/i18n/LanguageContext";
 
 const scoreOf = (j: Jurisdiction): number => {
-  const base =
-    j.lawStatus === "comprehensive" ? 80 : j.lawStatus === "partial" ? 40 : 0;
+  const base = j.lawStatus === "comprehensive" ? 80 : j.lawStatus === "partial" ? 40 : 0;
   const dpa = j.hasDPA ? 10 : 0;
   const treaties = CORE_TREATIES.some((t) => j.treaties[t]) ? 10 : 0;
   return base + dpa + treaties;
 };
 
 export const TravelRiskTool = () => {
+  const { t } = useT();
   const sorted = useMemo(
     () => [...JURISDICTIONS].sort((a, b) => a.jurisdiction.localeCompare(b.jurisdiction)),
     [],
@@ -52,28 +53,24 @@ export const TravelRiskTool = () => {
 
   const verdict =
     drop >= 50
-      ? { label: "Riesgo alto", color: "hsl(var(--status-none))", Icon: ShieldAlert }
+      ? { label: t("trv.high"), color: "hsl(var(--status-none))", Icon: ShieldAlert }
       : drop >= 20
-        ? { label: "Precaución", color: "hsl(var(--status-partial))", Icon: Shield }
-        : { label: "Datos a salvo", color: "hsl(var(--status-comprehensive))", Icon: ShieldCheck };
+        ? { label: t("trv.caution"), color: "hsl(var(--status-partial))", Icon: Shield }
+        : { label: t("trv.safe"), color: "hsl(var(--status-comprehensive))", Icon: ShieldCheck };
 
-  const overlap = fromJ && toJ
-    ? CORE_TREATIES.filter((t) => fromJ.treaties[t] && toJ.treaties[t])
-    : [];
+  const overlap = fromJ && toJ ? CORE_TREATIES.filter((tk) => fromJ.treaties[tk] && toJ.treaties[tk]) : [];
 
   return (
     <Card className="p-5 shadow-soft">
       <div className="flex items-center gap-2 mb-1">
         <Plane className="h-4 w-4 text-accent" />
-        <h3 className="font-display text-2xl">¿Tus datos viajan seguros?</h3>
+        <h3 className="font-display text-2xl">{t("trv.title")}</h3>
       </div>
-      <p className="text-xs text-muted-foreground mb-4">
-        Compara dos países y mide la caída en protección de datos cuando tu información cruza la frontera.
-      </p>
+      <p className="text-xs text-muted-foreground mb-4">{t("trv.lead")}</p>
 
       <div className="grid sm:grid-cols-[1fr_auto_1fr] gap-3 items-center">
         <div>
-          <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-1">Origen</div>
+          <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-1">{t("trv.from")}</div>
           <Select value={from} onValueChange={(v) => setPair({ from: v, to })}>
             <SelectTrigger><SelectValue /></SelectTrigger>
             <SelectContent className="max-h-[300px]">
@@ -85,7 +82,7 @@ export const TravelRiskTool = () => {
         </div>
         <ArrowRight className="hidden sm:block h-5 w-5 text-muted-foreground self-end mb-2" />
         <div>
-          <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-1">Destino</div>
+          <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-1">{t("trv.to")}</div>
           <Select value={to} onValueChange={(v) => setPair({ from, to: v })}>
             <SelectTrigger><SelectValue /></SelectTrigger>
             <SelectContent className="max-h-[300px]">
@@ -101,7 +98,7 @@ export const TravelRiskTool = () => {
         <div className="mt-5 grid sm:grid-cols-[1fr_auto] gap-4 items-stretch">
           <div className="rounded-xl border border-border p-4 bg-secondary/30">
             <div className="flex items-baseline justify-between mb-2">
-              <span className="text-xs text-muted-foreground">Caída de protección</span>
+              <span className="text-xs text-muted-foreground">{t("trv.drop")}</span>
               <span className="font-display text-3xl font-black tabular-nums" style={{ color: verdict.color }}>
                 −{drop}
               </span>
@@ -119,12 +116,12 @@ export const TravelRiskTool = () => {
             {overlap.length > 0 && (
               <div className="mt-3 pt-3 border-t border-border">
                 <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-1.5">
-                  Tratados en común
+                  {t("trv.shared")}
                 </div>
                 <div className="flex flex-wrap gap-1">
-                  {overlap.map((t) => (
-                    <Badge key={t} variant="outline" className="text-[10px]">
-                      {TREATY_LABELS[t]}
+                  {overlap.map((tk) => (
+                    <Badge key={tk} variant="outline" className="text-[10px]">
+                      {TREATY_LABELS[tk]}
                     </Badge>
                   ))}
                 </div>

@@ -2,8 +2,10 @@ import { useMemo, useState } from "react";
 import { Jurisdiction, REGION_COLORS, YEAR_MAX, YEAR_MIN } from "@/data/jurisdictions";
 import { Area, AreaChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { Card } from "@/components/ui/card";
+import { useT } from "@/i18n/LanguageContext";
 
 export const RegionComparator = ({ data }: { data: Jurisdiction[] }) => {
+  const { t } = useT();
   const [mode, setMode] = useState<"cum" | "new">("cum");
   const regions = useMemo(() => Array.from(new Set(data.map((d) => d.region))), [data]);
 
@@ -27,21 +29,21 @@ export const RegionComparator = ({ data }: { data: Jurisdiction[] }) => {
 
   return (
     <Card className="p-5 shadow-soft">
-      <div className="flex items-center justify-between mb-3">
+      <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
         <div>
-          <h3 className="font-display text-2xl">Adopción por región</h3>
-          <p className="text-xs text-muted-foreground">Cómo cada región adoptó leyes de privacidad en el tiempo</p>
+          <h3 className="font-display text-2xl">{t("rc.title")}</h3>
+          <p className="text-xs text-muted-foreground">{t("rc.lead")}</p>
         </div>
         <div className="flex bg-secondary rounded-full p-1 text-xs">
           <button onClick={() => setMode("cum")} className={`px-3 py-1 rounded-full ${mode === "cum" ? "bg-card shadow-sm" : "text-muted-foreground"}`}>
-            Acumulado
+            {t("rc.cum")}
           </button>
           <button onClick={() => setMode("new")} className={`px-3 py-1 rounded-full ${mode === "new" ? "bg-card shadow-sm" : "text-muted-foreground"}`}>
-            Nuevas/año
+            {t("rc.new")}
           </button>
         </div>
       </div>
-      <div className="h-72">
+      <div className="h-72 md:h-80">
         <ResponsiveContainer>
           <AreaChart data={series} margin={{ top: 8, right: 16, bottom: 0, left: -16 }}>
             <CartesianGrid stroke="hsl(var(--border))" strokeDasharray="3 3" vertical={false} />

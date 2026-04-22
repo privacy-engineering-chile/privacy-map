@@ -8,6 +8,7 @@ import {
   Treaties,
 } from "@/data/jurisdictions";
 import { Card } from "@/components/ui/card";
+import { useT } from "@/i18n/LanguageContext";
 
 interface SNode {
   name: string;
@@ -33,6 +34,7 @@ const W = 720;
 const H = 420;
 
 export const RegionTreatySankey = ({ data }: { data: Jurisdiction[] }) => {
+  const { t, lang } = useT();
   const [hover, setHover] = useState<{ idx: number; kind: "link" | "node" } | null>(null);
 
   const graph = useMemo(() => {
@@ -43,30 +45,26 @@ export const RegionTreatySankey = ({ data }: { data: Jurisdiction[] }) => {
         kind: "region",
         color: REGION_COLORS[r] ?? "hsl(var(--muted))",
       })),
-      ...CORE_TREATIES.map<SNode>((t) => ({
-        name: TREATY_LABELS[t],
+      ...CORE_TREATIES.map<SNode>((tk) => ({
+        name: TREATY_LABELS[tk],
         kind: "treaty",
-        color: TREATY_COLORS[t],
+        color: TREATY_COLORS[tk],
       })),
     ];
     const links: SLink[] = [];
     regions.forEach((r, ri) => {
-      CORE_TREATIES.forEach((t, ti) => {
+      CORE_TREATIES.forEach((tk, ti) => {
         const v = data.filter(
-          (d) => d.region === r && d.treaties[t as keyof Treaties],
+          (d) => d.region === r && d.treaties[tk as keyof Treaties],
         ).length;
-        if (v > 0)
-          links.push({ source: ri, target: regions.length + ti, value: v });
+        if (v > 0) links.push({ source: ri, target: regions.length + ti, value: v });
       });
     });
 
     const layout = sankey<SNode, SLink>()
       .nodeWidth(14)
       .nodePadding(10)
-      .extent([
-        [4, 8],
-        [W - 4, H - 8],
-      ]);
+      .extent([[4, 8], [W - 4, H - 8]]);
 
     return layout({
       nodes: nodes.map((d) => ({ ...d })),
@@ -74,22 +72,18 @@ export const RegionTreatySankey = ({ data }: { data: Jurisdiction[] }) => {
     } as SankeyGraph<SNode, SLink>);
   }, [data]);
 
+  const latamShort = lang === "es" ? "LatAm & Caribe" : "LatAm & Caribbean";
+
   return (
     <Card className="p-5 shadow-soft">
       <div className="flex items-baseline justify-between gap-3 flex-wrap">
         <div>
-          <h3 className="font-display text-2xl">Flujo Región → Tratado</h3>
-          <p className="text-xs text-muted-foreground">
-            Cada hilo representa la cantidad de jurisdicciones de una región dentro de un tratado.
-          </p>
+          <h3 className="font-display text-2xl">{t("sk.title")}</h3>
+          <p className="text-xs text-muted-foreground">{t("sk.lead")}</p>
         </div>
       </div>
       <div className="mt-3 -mx-2 overflow-x-auto">
-        <svg
-          viewBox={`0 0 ${W} ${H}`}
-          className="w-full h-[420px]"
-          preserveAspectRatio="xMidYMid meet"
-        >
+        <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-[360px] md:h-[420px]" preserveAspectRatio="xMidYMid meet">
           <g>
             {graph.links.map((l, i) => {
               const path = sankeyLinkHorizontal()(l as any) ?? "";
@@ -109,7 +103,7 @@ export const RegionTreatySankey = ({ data }: { data: Jurisdiction[] }) => {
                   onMouseLeave={() => setHover(null)}
                 >
                   <title>
-                    {(l.source as unknown as SNode).name} → {(l.target as unknown as SNode).name}: {l.value} jurisdicciones
+                    {(l.source as unknown as SNode).name} → {(l.target as unknown as SNode).name}: {l.value}
                   </title>
                 </path>
               );
@@ -118,8 +112,7 @@ export const RegionTreatySankey = ({ data }: { data: Jurisdiction[] }) => {
           <g>
             {graph.nodes.map((n, i) => {
               const node = n as any;
-              const label =
-                n.name === "Latin America and the Caribbean" ? "LatAm & Caribe" : n.name;
+              const label = n.name === "Latin America and the Caribbean" ? latamShort : n.name;
               const isLeft = n.kind === "region";
               return (
                 <g key={i}>
@@ -131,9 +124,7 @@ export const RegionTreatySankey = ({ data }: { data: Jurisdiction[] }) => {
                     fill={n.color}
                     rx={2}
                   >
-                    <title>
-                      {n.name}: {node.value} jurisdicciones
-                    </title>
+                    <title>{n.name}: {node.value}</title>
                   </rect>
                   <text
                     x={isLeft ? node.x1 + 6 : node.x0 - 6}

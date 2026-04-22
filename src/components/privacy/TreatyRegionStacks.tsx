@@ -11,6 +11,7 @@ import {
   YAxis,
 } from "recharts";
 import { Card } from "@/components/ui/card";
+import { useT } from "@/i18n/LanguageContext";
 
 const TREATY_COLORS: Record<string, string> = {
   conv108: "hsl(var(--treaty-conv108))",
@@ -22,12 +23,13 @@ const TREATY_COLORS: Record<string, string> = {
 };
 
 export const TreatyRegionStacks = ({ data }: { data: Jurisdiction[] }) => {
+  const { t } = useT();
   const rows = useMemo(() => {
     const regs = Array.from(new Set(data.map((d) => d.region)));
     return regs.map((r) => {
       const row: any = { region: r === "Latin America and the Caribbean" ? "LatAm" : r };
-      CORE_TREATIES.forEach((t) => {
-        row[t] = data.filter((d) => d.region === r && d.treaties[t]).length;
+      CORE_TREATIES.forEach((tk) => {
+        row[tk] = data.filter((d) => d.region === r && d.treaties[tk]).length;
       });
       return row;
     });
@@ -35,18 +37,13 @@ export const TreatyRegionStacks = ({ data }: { data: Jurisdiction[] }) => {
 
   return (
     <Card className="p-5 shadow-soft">
-      <h3 className="font-display text-2xl">Tratados por región</h3>
-      <p className="text-xs text-muted-foreground mb-3">
-        Membresías acumuladas en marcos internacionales
-      </p>
-      <div className="h-72">
+      <h3 className="font-display text-2xl">{t("trs.title")}</h3>
+      <p className="text-xs text-muted-foreground mb-3">{t("trs.lead")}</p>
+      <div className="h-72 md:h-80">
         <ResponsiveContainer>
           <BarChart data={rows} margin={{ top: 8, right: 16, bottom: 0, left: -16 }}>
             <CartesianGrid stroke="hsl(var(--border))" strokeDasharray="3 3" vertical={false} />
-            <XAxis
-              dataKey="region"
-              tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
-            />
+            <XAxis dataKey="region" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
             <YAxis tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
             <Tooltip
               contentStyle={{
@@ -56,14 +53,8 @@ export const TreatyRegionStacks = ({ data }: { data: Jurisdiction[] }) => {
               }}
             />
             <Legend wrapperStyle={{ fontSize: 11 }} />
-            {CORE_TREATIES.map((t) => (
-              <Bar
-                key={t}
-                dataKey={t}
-                stackId="t"
-                name={TREATY_LABELS[t]}
-                fill={TREATY_COLORS[t]}
-              />
+            {CORE_TREATIES.map((tk) => (
+              <Bar key={tk} dataKey={tk} stackId="t" name={TREATY_LABELS[tk]} fill={TREATY_COLORS[tk]} />
             ))}
           </BarChart>
         </ResponsiveContainer>
