@@ -46,8 +46,18 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;
 };
 
+const fallbackLang: Lang = typeof navigator !== "undefined" && navigator.language?.toLowerCase().startsWith("en") ? "en" : "es";
+
 export const useT = (): Ctx => {
   const ctx = useContext(LanguageContext);
-  if (!ctx) throw new Error("useT must be used within LanguageProvider");
-  return ctx;
+  if (ctx) return ctx;
+  return {
+    lang: fallbackLang,
+    setLang: () => {},
+    t: (key, vars) => {
+      const entry = dict[key];
+      if (!entry) return key;
+      return tFormat(entry[fallbackLang], vars);
+    },
+  };
 };
