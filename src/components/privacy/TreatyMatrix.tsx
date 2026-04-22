@@ -42,7 +42,7 @@ export const TreatyMatrix = ({
       <div className="flex items-center justify-between mb-3 gap-2 flex-wrap">
         <div>
           <h3 className="font-display text-2xl">{t("tm.title")}</h3>
-          <p className="text-xs text-muted-foreground">{t("tm.lead")}</p>
+          <p className="text-sm text-muted-foreground">{t("tm.lead")}</p>
         </div>
         <select
           value={region}
