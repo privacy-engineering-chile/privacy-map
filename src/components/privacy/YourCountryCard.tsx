@@ -1,0 +1,89 @@
+import { useEffect, useState } from "react";
+import { JURISDICTIONS, Jurisdiction, STATUS_COLOR, STATUS_LABEL } from "@/data/jurisdictions";
+import { ISO2_TO_ISO3, isoToFlag } from "@/lib/iso2to3";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { X, MapPin } from "lucide-react";
+
+interface Props {
+  onSelect: (j: Jurisdiction) => void;
+}
+
+const SESSION_KEY = "privacy-atlas-yourcountry-dismissed";
+
+export const YourCountryCard = ({ onSelect }: Props) => {
+  const [country, setCountry] = useState<Jurisdiction | null>(null);
+  const [iso2, setIso2] = useState<string>("");
+  const [dismissed, setDismissed] = useState<boolean>(() =>
+    typeof window !== "undefined" && sessionStorage.getItem(SESSION_KEY) === "1",
+  );
+
+  useEffect(() => {
+    if (dismissed) return;
+    let cancelled = false;
+    fetch("https://ipapi.co/json/")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (cancelled || !d) return;
+        const code2 = d.country_code as string | undefined;
+        const code3 = d.country_code_iso3 as string | undefined;
+        const iso3 = code3 || (code2 ? ISO2_TO_ISO3[code2] : undefined);
+        if (!iso3) return;
+        const found = JURISDICTIONS.find((j) => j.iso3 === iso3);
+        if (found) {
+          setCountry(found);
+          setIso2(code2 ?? "");
+        }
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [dismissed]);
+
+  const dismiss = () => {
+    sessionStorage.setItem(SESSION_KEY, "1");
+    setDismissed(true);
+  };
+
+  if (dismissed || !country) return null;
+
+  return (
+    <Card className="w-[300px] p-4 shadow-pop border-accent/30 bg-card/95 backdrop-blur animate-fade-up relative">
+      <button
+        onClick={dismiss}
+        className="absolute top-2 right-2 text-muted-foreground hover:text-foreground"
+        aria-label="Cerrar"
+      >
+        <X className="h-3.5 w-3.5" />
+      </button>
+      <div className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-accent font-bold">
+        <MapPin className="h-3 w-3" /> Tu ubicación
+      </div>
+      <div className="flex items-center gap-2 mt-2">
+        <span className="text-3xl">{isoToFlag(iso2)}</span>
+        <div>
+          <div className="font-display text-lg font-bold leading-tight">{country.jurisdiction}</div>
+          <div
+            className="inline-block text-[10px] px-1.5 py-0.5 rounded text-white font-medium mt-0.5"
+            style={{ background: STATUS_COLOR[country.lawStatus] }}
+          >
+            {STATUS_LABEL[country.lawStatus]}
+          </div>
+        </div>
+      </div>
+      {country.keyLawName && (
+        <div className="mt-2 text-xs text-muted-foreground line-clamp-2">
+          {country.keyLawName} {country.keyLawYear && `· ${country.keyLawYear}`}
+        </div>
+      )}
+      <Button
+        size="sm"
+        className="w-full mt-3"
+        onClick={() => onSelect(country)}
+      >
+        Ver detalle
+      </Button>
+    </Card>
+  );
+};
