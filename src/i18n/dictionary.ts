@@ -14,10 +14,10 @@ export const dict: Dict = {
   },
 
   // Privacy badge
-  "privacy.short": { es: "Sin tracking · Sin cookies", en: "No tracking · No cookies" },
+  "privacy.short": { es: "Sin tracking · Solo cookies esenciales", en: "No tracking · Only essential cookies" },
   "privacy.long": {
-    es: "Este sitio no almacena nada sobre ti. Solo tus preferencias de tema e idioma quedan en tu navegador.",
-    en: "This site stores nothing about you. Only your theme & language preferences are kept in your browser.",
+    es: "Sin analítica, sin publicidad, sin rastreo de primera parte. Las únicas cookies que se guardan son estrictamente necesarias de nuestro hosting y CDN — mira el detalle abajo.",
+    en: "No analytics, no ads, no first-party tracking. The only cookies set are strictly-necessary ones from our hosting and CDN — see the details below.",
   },
 
   // Theme & language
