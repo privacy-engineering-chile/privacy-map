@@ -1,0 +1,13 @@
+# Privacy Atlas
+
+> Interactive atlas of global data privacy regulation: 50 years of laws, treaties, and cross-border transfer risk in one screen.
+
+Privacy Atlas visualizes the state of data protection across every jurisdiction — comprehensive vs sectoral laws, data protection authorities, international treaty participation, and a travel risk tool for assessing cross-border data transfers.
+
+## Pages
+
+- [Home](/): Interactive world map, treaty network, regional rankings, and travel risk tool.
+
+## Optional
+
+- [Source on GitHub](https://github.com/): MIT-licensed React + TypeScript codebase.

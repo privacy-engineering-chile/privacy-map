@@ -27,6 +27,7 @@ import { ScrollProgressRail } from "@/components/privacy/ScrollProgressRail";
 import { ChevronDown } from "lucide-react";
 import { useTheme } from "@/hooks/useTheme";
 import { useT } from "@/i18n/LanguageContext";
+import { Helmet } from "react-helmet-async";
 import { Linkedin } from "lucide-react";
 
 const Index = () => {
@@ -34,7 +35,14 @@ const Index = () => {
   const [selected, setSelected] = useState<Jurisdiction | null>(null);
   const mapRef = useRef<HTMLDivElement>(null);
   useTheme();
-  const { t } = useT();
+  const { t, lang } = useT();
+
+  const seoTitle = lang === "en"
+    ? "Privacy Atlas — Global data privacy regulation"
+    : "Privacy Atlas — Regulación mundial de privacidad de datos";
+  const seoDesc = lang === "en"
+    ? "50 years of privacy laws in a single screen. Explore comprehensive vs sectoral laws, DPAs, treaties and cross-border transfer risk."
+    : "50 años de leyes de privacidad en una sola pantalla. Explora leyes integrales, sectoriales, autoridades, tratados y riesgo de transferencias.";
 
   useEffect(() => {
     const p = new URLSearchParams(window.location.search);
@@ -50,6 +58,16 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Helmet>
+        <html lang={lang} />
+        <title>{seoTitle}</title>
+        <meta name="description" content={seoDesc} />
+        <link rel="canonical" href="https://atlas.privacyengineering.cl/" />
+        <meta property="og:title" content={seoTitle} />
+        <meta property="og:description" content={seoDesc} />
+        <meta property="og:url" content="https://atlas.privacyengineering.cl/" />
+        <meta property="og:locale" content={lang === "en" ? "en_US" : "es_ES"} />
+      </Helmet>
       <ScrollProgressRail />
       <header className="bg-hero border-b border-border">
         <div className="container mx-auto px-4 py-10 md:py-16">
