@@ -11,8 +11,9 @@ export const dict: Dict = {
   "hero.subtitle":           { es: "{total} jurisdicciones · {none} sin protección.", en: "{total} jurisdictions · {none} with no protection." },
 
   // Privacy badge
-  "privacy.short":           { es: "Sin tracking · Sin cookies",                     en: "No tracking · No cookies" },
-  "privacy.long":            { es: "Este sitio no almacena nada sobre ti. Solo tus preferencias de tema e idioma quedan en tu navegador.", en: "This site stores nothing about you. Only your theme & language preferences are kept in your browser." },
+  "privacy.short":           { es: "Sin tracking · Solo cookies esenciales",          en: "No tracking · Only essential cookies" },
+  "privacy.long":            { es: "Este sitio no usa analítica ni publicidad. Solo se establecen cookies de infraestructura imprescindibles para servir el sitio.", en: "This site uses no analytics or advertising. Only strictly necessary infrastructure cookies are set to serve the site." },
+  "privacy.viewCookies":     { es: "Ver detalle de cookies →",                        en: "See cookie details →" },
 
   // Theme & language
   "theme.toggle":            { es: "Cambiar tema",                                    en: "Toggle theme" },
@@ -196,7 +197,29 @@ export const dict: Dict = {
 
   // Footer
   "ft.builtby":              { es: "Construido por",                                  en: "Built by" },
-  "ft.privacy":              { es: "Sin datos · Sin cookies · Sin analytics.",        en: "No data · No cookies · No analytics." },
+  "ft.privacy":              { es: "Sin analítica · Sin tracking · Solo cookies esenciales.", en: "No analytics · No tracking · Only essential cookies." },
+  "ft.cookies":              { es: "Cookies",                                         en: "Cookies" },
+
+  // Cookies page
+  "ck.title":                { es: "Cookies",                                         en: "Cookies" },
+  "ck.lead":                 { es: "No usamos analítica, publicidad ni tracking de primera parte. Las cookies a continuación provienen de la infraestructura que mantiene el sitio en línea y son estrictamente necesarias.", en: "We don't run analytics, ads, or first-party tracking. The cookies below come from the infrastructure that keeps the site online and are strictly necessary." },
+  "ck.col.name":             { es: "Nombre",                                          en: "Name" },
+  "ck.col.provider":         { es: "Proveedor",                                       en: "Provider" },
+  "ck.col.purpose":          { es: "Propósito",                                       en: "Purpose" },
+  "ck.col.duration":         { es: "Duración",                                        en: "Duration" },
+  "ck.col.category":         { es: "Categoría",                                       en: "Category" },
+  "ck.cat.necessary":        { es: "Estrictamente necesaria",                         en: "Strictly necessary" },
+  "ck.cf_bm.purpose":        { es: "Gestión de bots de Cloudflare: distingue humanos de bots automatizados para proteger el sitio.", en: "Cloudflare bot management: distinguishes humans from automated bots to protect the site." },
+  "ck.dplb.purpose":         { es: "Balanceador de carga: te enruta a la misma instancia para mantener una sesión estable.", en: "Load balancer routing: keeps you on the same backend instance for a stable session." },
+  "ck.session.purpose":      { es: "Identificador anónimo de sesión usado por el alojamiento para servir las solicitudes.", en: "Anonymous session identifier used by the hosting platform to serve requests." },
+  "ck.cf_bm.dur":            { es: "~30 minutos",                                     en: "~30 minutes" },
+  "ck.dplb.dur":             { es: "~7 días",                                         en: "~7 days" },
+  "ck.session.dur":          { es: "~30 minutos",                                     en: "~30 minutes" },
+  "ck.consent.title":        { es: "¿Por qué no hay banner de consentimiento?",       en: "Why no consent banner?" },
+  "ck.consent.body":         { es: "Bajo el GDPR y la ePrivacy, las cookies estrictamente necesarias para entregar un servicio solicitado por el usuario están exentas de consentimiento. No establecemos ninguna otra cookie.", en: "Under GDPR and ePrivacy, cookies strictly necessary to deliver a service requested by the user are exempt from consent. We set no other cookies." },
+  "ck.clear.title":          { es: "Cómo borrarlas",                                  en: "How to clear them" },
+  "ck.clear.body":           { es: "Puedes eliminar estas cookies en cualquier momento desde la configuración de tu navegador. El sitio seguirá funcionando.", en: "You can delete these cookies at any time from your browser settings. The site will keep working." },
+  "ck.back":                 { es: "← Volver al atlas",                               en: "← Back to atlas" },
 
   // Hero rotating stats & cues
   "hero.valueprop":          { es: "50 años de leyes de privacidad, en una sola pantalla. Sin login, sin cookies, sin tracking.", en: "50 years of privacy law, on one screen. No login, no cookies, no tracking." },

@@ -1,4 +1,5 @@
 import { ShieldCheck } from "lucide-react";
+import { Link } from "react-router-dom";
 import {
   Popover,
   PopoverContent,
@@ -19,9 +20,16 @@ export const PrivacyBadge = () => {
           <span className="hidden sm:inline">{t("privacy.short")}</span>
         </button>
       </PopoverTrigger>
-      <PopoverContent className="w-72 text-xs leading-relaxed">
-        {t("privacy.long")}
+      <PopoverContent className="w-72 text-xs leading-relaxed space-y-2">
+        <p>{t("privacy.long")}</p>
+        <Link
+          to="/cookies"
+          className="inline-block font-semibold text-accent hover:underline"
+        >
+          {t("privacy.viewCookies")}
+        </Link>
       </PopoverContent>
     </Popover>
   );
 };
+

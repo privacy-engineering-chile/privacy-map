@@ -185,6 +185,11 @@ const Index = () => {
             </a>
           </div>
           <div className="text-muted-foreground">{t("ft.privacy")}</div>
+          <div>
+            <a href="/cookies" className="hover:text-accent transition-colors underline-offset-2 hover:underline">
+              {t("ft.cookies")}
+            </a>
+          </div>
         </footer>
       </main>
 
