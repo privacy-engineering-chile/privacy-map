@@ -85,7 +85,7 @@ const Index = () => {
               <h1 className="font-display text-4xl sm:text-5xl md:text-7xl font-black leading-[0.95] text-balance">
                 {t("hero.title.a")}<span className="text-accent">{t("hero.title.accent")}</span>{t("hero.title.b")}
               </h1>
-              <p className="mt-4 text-base md:text-lg italic text-muted-foreground/90 max-w-2xl">
+              <p className="mt-4 text-base md:text-lg italic text-muted-foreground max-w-2xl">
                 {t("hero.valueprop")}
               </p>
               <RotatingStat />
@@ -184,7 +184,7 @@ const Index = () => {
               <Linkedin className="h-3 w-3" /> Chasquilla Engineer
             </a>
           </div>
-          <div className="text-muted-foreground/80">{t("ft.privacy")}</div>
+          <div className="text-muted-foreground">{t("ft.privacy")}</div>
         </footer>
       </main>
 
