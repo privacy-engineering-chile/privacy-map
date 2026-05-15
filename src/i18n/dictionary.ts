@@ -229,7 +229,7 @@ export const dict: Dict = {
 
   // Footer
   "ft.builtby": { es: "Construido por", en: "Built by" },
-  "ft.privacy": { es: "Sin datos · Sin cookies · Sin analytics.", en: "No data · No cookies · No analytics." },
+  "ft.privacy": { es: "", en: "" },
 
   // Hero rotating stats & cues
   "hero.valueprop": {
