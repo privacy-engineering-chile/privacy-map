@@ -27,6 +27,7 @@ import { ScrollProgressRail } from "@/components/privacy/ScrollProgressRail";
 import { ChevronDown } from "lucide-react";
 import { useTheme } from "@/hooks/useTheme";
 import { useT } from "@/i18n/LanguageContext";
+import { Helmet } from "react-helmet-async";
 import { Linkedin } from "lucide-react";
 
 const Index = () => {
