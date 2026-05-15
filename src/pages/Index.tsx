@@ -37,12 +37,14 @@ const Index = () => {
   useTheme();
   const { t, lang } = useT();
 
-  const seoTitle = lang === "en"
-    ? "Privacy Atlas — Global data privacy regulation"
-    : "Privacy Atlas — Regulación mundial de privacidad de datos";
-  const seoDesc = lang === "en"
-    ? "50 years of privacy laws in a single screen. Explore comprehensive vs sectoral laws, DPAs, treaties and cross-border transfer risk."
-    : "50 años de leyes de privacidad en una sola pantalla. Explora leyes integrales, sectoriales, autoridades, tratados y riesgo de transferencias.";
+  const seoTitle =
+    lang === "en"
+      ? "Privacy Atlas — Global data privacy regulation"
+      : "Privacy Atlas — Regulación mundial de privacidad de datos";
+  const seoDesc =
+    lang === "en"
+      ? "50 years of privacy laws in a single screen. Explore comprehensive vs sectoral laws, DPAs, treaties and cross-border transfer risk."
+      : "50 años de leyes de privacidad en una sola pantalla. Explora leyes integrales, sectoriales, autoridades, tratados y riesgo de transferencias.";
 
   useEffect(() => {
     const p = new URLSearchParams(window.location.search);
@@ -83,11 +85,11 @@ const Index = () => {
                 <span className="h-2 w-2 rounded-full bg-accent animate-pulse" /> {t("hero.eyebrow")}
               </div>
               <h1 className="font-display text-4xl sm:text-5xl md:text-7xl font-black leading-[0.95] text-balance">
-                {t("hero.title.a")}<span className="text-accent">{t("hero.title.accent")}</span>{t("hero.title.b")}
+                {t("hero.title.a")}
+                <span className="text-accent">{t("hero.title.accent")}</span>
+                {t("hero.title.b")}
               </h1>
-              <p className="mt-4 text-base md:text-lg italic text-muted-foreground max-w-2xl">
-                {t("hero.valueprop")}
-              </p>
+              <p className="mt-4 text-base md:text-lg italic text-muted-foreground max-w-2xl">{t("hero.valueprop")}</p>
               <RotatingStat />
             </div>
             <div className="flex justify-center">
@@ -106,9 +108,7 @@ const Index = () => {
           </div>
 
           <button
-            onClick={() =>
-              document.querySelector("main")?.scrollIntoView({ behavior: "smooth", block: "start" })
-            }
+            onClick={() => document.querySelector("main")?.scrollIntoView({ behavior: "smooth", block: "start" })}
             className="mt-10 mx-auto flex flex-col items-center gap-1 text-xs uppercase tracking-[0.25em] text-muted-foreground hover:text-accent transition-colors group"
             aria-label={t("hero.scrollcue")}
           >
@@ -187,7 +187,7 @@ const Index = () => {
           <div className="text-muted-foreground">{t("ft.privacy")}</div>
           <div>
             <a href="/cookies" className="hover:text-accent transition-colors underline-offset-2 hover:underline">
-              {t("ft.cookies")}
+              {t("Cookies")}
             </a>
           </div>
         </footer>
