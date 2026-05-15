@@ -254,6 +254,55 @@ export const dict: Dict = {
     en: "The first country legislated in {pioneerYear}. The most recent, in {recentYear}.",
   },
   "globe.replayLabel": { es: "▶ Repetir 1973 → 2024", en: "▶ Replay 1973 → 2024" },
+
+  // Footer cookies link
+  "ft.cookiesLink": { es: "Cookies de este sitio", en: "Cookies from this site" },
+
+  // Cookies page
+  "ck.back": { es: "← Volver al atlas", en: "← Back to the atlas" },
+  "ck.title": { es: "Cookies de este sitio", en: "Cookies from this site" },
+  "ck.lead": {
+    es: "No usamos analítica, publicidad ni rastreo de primera parte. Las únicas cookies que verás en tu navegador provienen de la infraestructura que mantiene el sitio en línea, seguro y rápido. Aquí te explicamos cuáles son, quién las pone y por qué las necesitamos.",
+    en: "We don't run analytics, ads, or first-party tracking. The only cookies you'll see in your browser come from the infrastructure that keeps the site online, secure and fast. Below is exactly which ones, who sets them, and why we need them.",
+  },
+  "ck.col.name": { es: "Nombre", en: "Name" },
+  "ck.col.provider": { es: "Proveedor", en: "Provider" },
+  "ck.col.purpose": { es: "Propósito y por qué la necesitamos", en: "Purpose & why we need it" },
+  "ck.col.duration": { es: "Duración", en: "Duration" },
+  "ck.col.category": { es: "Categoría", en: "Category" },
+  "ck.cat.necessary": { es: "Estrictamente necesaria", en: "Strictly necessary" },
+
+  "ck.cf_bm.purpose": {
+    es: "Cookie de gestión de bots de Cloudflare. Distingue entre tráfico humano y automatizado para bloquear ataques (DDoS, scraping abusivo) antes de que lleguen al sitio. Sin ella, no podríamos servirte las páginas de forma segura ni mantener el sitio disponible.",
+    en: "Cloudflare bot-management cookie. Tells human visitors apart from automated traffic so we can block attacks (DDoS, abusive scraping) before they hit the site. Without it we couldn't serve pages safely or keep the site reliably online.",
+  },
+  "ck.cf_bm.dur": { es: "~30 minutos", en: "~30 minutes" },
+
+  "ck.dplb.purpose": {
+    es: "Cookie del balanceador de carga de DigitalOcean App Platform. Te envía al mismo servidor mientras navegas, evitando que cada solicitud rebote entre máquinas y rompa la sesión. Es lo que hace que el sitio se sienta consistente.",
+    en: "DigitalOcean App Platform load-balancer cookie. Routes you to the same backend instance while you browse so requests don't bounce between servers and break your session. It's what makes the site feel consistent.",
+  },
+  "ck.dplb.dur": { es: "~7 días", en: "~7 days" },
+
+  "ck.session.purpose": {
+    es: "Identificador anónimo de sesión que utiliza el alojamiento. No contiene datos personales ni se vincula a tu identidad: solo permite que el servidor reconozca solicitudes consecutivas como parte de la misma visita.",
+    en: "Anonymous session identifier used by the hosting platform. It contains no personal data and isn't linked to your identity — it only lets the server recognise consecutive requests as part of the same visit.",
+  },
+  "ck.session.dur": { es: "~30 minutos", en: "~30 minutes" },
+
+  "ck.consent.title": { es: "¿Por qué no hay banner de consentimiento?", en: "Why is there no consent banner?" },
+  "ck.consent.body": {
+    es: "Estas tres cookies son estrictamente necesarias para que el sitio funcione, esté protegido contra ataques y mantenga tu sesión estable. Bajo el RGPD y la ePrivacy, las cookies estrictamente necesarias están exentas de consentimiento. No usamos ninguna cookie de analítica, publicidad ni perfilado, así que no hay nada por lo que pedirte permiso.",
+    en: "These three cookies are strictly necessary for the site to load, stay protected from attacks, and keep your session stable. Under GDPR and ePrivacy, strictly-necessary cookies are exempt from consent. We don't use any analytics, advertising, or profiling cookies, so there's nothing to ask permission for.",
+  },
+
+  "ck.clear.title": { es: "Cómo eliminarlas", en: "How to clear them" },
+  "ck.clear.body": {
+    es: "Puedes borrarlas en cualquier momento desde la configuración de tu navegador (Configuración → Privacidad → Cookies y datos del sitio). El sitio seguirá funcionando, pero se generarán nuevas cookies en tu próxima visita para mantener la protección y la sesión.",
+    en: "You can delete them any time from your browser settings (Settings → Privacy → Cookies and site data). The site will still work, but fresh cookies will be issued on your next visit to keep protection and session continuity.",
+  },
+
+  "privacy.viewCookies": { es: "Ver detalle de cookies →", en: "See cookie details →" },
 };
 
 export const tFormat = (s: string, vars?: Record<string, string | number>) => {
