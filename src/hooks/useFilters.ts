@@ -65,6 +65,18 @@ function decode(): Filters {
 
 export function useFilters() {
   const [filters, setFilters] = useState<Filters>(decode);
+  const [data, setData] = useState<Jurisdiction[]>([]);
+
+  // Load the heavy dataset lazily, off the critical path.
+  useEffect(() => {
+    let cancelled = false;
+    import("@/data/jurisdictions.data").then((m) => {
+      if (!cancelled) setData(m.JURISDICTIONS);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     const p = new URLSearchParams();
@@ -85,7 +97,7 @@ export function useFilters() {
 
   const filtered = useMemo(() => {
     const q = filters.search.trim().toLowerCase();
-    return JURISDICTIONS.filter((j) => {
+    return data.filter((j) => {
       if (!filters.regions.includes(j.region)) return false;
       if (!filters.statuses.includes(j.lawStatus)) return false;
       // Era filter only applies to jurisdictions that have an era
@@ -100,7 +112,7 @@ export function useFilters() {
       if (q && !j.jurisdiction.toLowerCase().includes(q)) return false;
       return true;
     });
-  }, [filters]);
+  }, [filters, data]);
 
   const reset = useCallback(() => setFilters(DEFAULT), []);
 
