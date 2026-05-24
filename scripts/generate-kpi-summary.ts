@@ -52,6 +52,9 @@ const summary = {
   byStatus,
   byRegion,
   sidsNoLaw,
+  dpaCount,
+  pioneerYear: Number.isFinite(pioneerYear) ? pioneerYear : null,
+  recentYear: Number.isFinite(recentYear) ? recentYear : null,
   pioneer,
   byIso3,
 };
