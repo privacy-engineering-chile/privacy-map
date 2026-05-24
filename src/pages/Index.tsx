@@ -1,9 +1,9 @@
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
-import { Jurisdiction, JURISDICTIONS } from "@/data/jurisdictions";
+import type { Jurisdiction } from "@/data/jurisdictions";
+import { KPI_SUMMARY } from "@/data/kpiSummary";
 import { useFilters } from "@/hooks/useFilters";
 import { KPICards } from "@/components/privacy/KPICards";
 import { ChapterHeading } from "@/components/privacy/ChapterHeading";
-import { HeroAdoptionGlobe } from "@/components/privacy/HeroAdoptionGlobe";
 import { YourCountryCard } from "@/components/privacy/YourCountryCard";
 import { ThemeToggle } from "@/components/privacy/ThemeToggle";
 import { LanguageToggle } from "@/components/privacy/LanguageToggle";
@@ -17,6 +17,7 @@ import { Helmet } from "react-helmet-async";
 import { Linkedin } from "lucide-react";
 
 // Below-the-fold: code-split to keep the initial bundle small
+const HeroAdoptionGlobe = lazy(() => import("@/components/privacy/HeroAdoptionGlobe").then(m => ({ default: m.HeroAdoptionGlobe })));
 const FiltersBar = lazy(() => import("@/components/privacy/FiltersBar").then(m => ({ default: m.FiltersBar })));
 const WorldMap = lazy(() => import("@/components/privacy/WorldMap").then(m => ({ default: m.WorldMap })));
 const CountryDetailDrawer = lazy(() => import("@/components/privacy/CountryDetailDrawer").then(m => ({ default: m.CountryDetailDrawer })));
@@ -55,14 +56,19 @@ const Index = () => {
   useEffect(() => {
     const p = new URLSearchParams(window.location.search);
     const iso = p.get("country");
-    if (iso) {
-      const found = JURISDICTIONS.find((j) => j.iso3 === iso);
+    if (!iso) return;
+    let cancelled = false;
+    import("@/data/jurisdictions.data").then((m) => {
+      if (cancelled) return;
+      const found = m.JURISDICTIONS.find((j) => j.iso3 === iso);
       if (found) setSelected(found);
-    }
+    });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  const sidsNoLaw = JURISDICTIONS.filter((j) => j.sids && j.lawStatus === "none").length;
-  const noneTotal = JURISDICTIONS.filter((j) => j.lawStatus === "none").length;
+  const sidsNoLaw = KPI_SUMMARY.sidsNoLaw;
 
   return (
     <div className="min-h-screen bg-background">
@@ -110,7 +116,9 @@ const Index = () => {
           </div>
 
           <div className="mt-8">
-            <HeroAdoptionGlobe total={JURISDICTIONS.length} />
+            <Suspense fallback={<div className="h-[420px] rounded-2xl bg-card/40 border border-border/50 animate-pulse" aria-hidden />}>
+              <HeroAdoptionGlobe total={KPI_SUMMARY.total} />
+            </Suspense>
           </div>
 
           <button

@@ -1,7 +1,7 @@
-import { JURISDICTIONS } from "@/data/jurisdictions";
 import { Card } from "@/components/ui/card";
 import { useParallaxTilt } from "@/hooks/useParallaxTilt";
 import { useT } from "@/i18n/LanguageContext";
+import { KPI_SUMMARY } from "@/data/kpiSummary";
 
 const TiltCard = ({
   children,
@@ -22,12 +22,10 @@ const TiltCard = ({
 
 export const KPICards = () => {
   const { t } = useT();
-  const total = JURISDICTIONS.length;
-  const comprehensive = JURISDICTIONS.filter((j) => j.lawStatus === "comprehensive").length;
-  const none = JURISDICTIONS.filter((j) => j.lawStatus === "none").length;
-  const oldest = JURISDICTIONS.filter((j) => j.firstLawYear).sort(
-    (a, b) => (a.firstLawYear ?? 9999) - (b.firstLawYear ?? 9999),
-  )[0];
+  const total = KPI_SUMMARY.total;
+  const comprehensive = KPI_SUMMARY.byStatus.comprehensive;
+  const none = KPI_SUMMARY.byStatus.none;
+  const pioneer = KPI_SUMMARY.pioneer;
 
   const items = [
     { label: t("kpi.jurisdictions"), value: total, sub: "", color: "text-primary" },
@@ -45,8 +43,8 @@ export const KPICards = () => {
     },
     {
       label: t("kpi.pioneer"),
-      value: oldest?.firstLawYear ?? "—",
-      sub: oldest?.jurisdiction ?? "",
+      value: pioneer?.firstLawYear ?? "—",
+      sub: pioneer?.jurisdiction ?? "",
       color: "text-accent",
     },
   ];

@@ -1,73 +1,63 @@
-# Mejoras de rendimiento y carga
+# Reducir el dataset del bundle inicial
 
-El home (`/`) carga de golpe ~20 componentes pesados (recharts, d3-sankey, react-simple-maps, topojson, html-to-image, qrcode) y un dataset de ~12.000 líneas (`src/data/jurisdictions.ts`). Todo eso entra en el bundle inicial aunque el usuario sólo vea el hero. Plan en 4 frentes, de mayor a menor impacto.
+`src/data/jurisdictions.ts` pesa ~280 KB sin minificar. Aunque los 20 componentes que lo usan ya están lazy-loadeados, **el hero todavía lo importa** (via `KPICards`, `HeroAdoptionGlobe`, `YourCountryCard`, `RotatingStat` y `Index.tsx` con `JURISDICTIONS.length`), así que el dataset entero sigue entrando en el chunk inicial.
 
-## 1. Code-splitting de rutas y secciones below-the-fold
+Objetivo: que el bundle inicial solo cargue un **resumen precomputado de ~2 KB** y que los ~280 KB se vayan al chunk del mapa (que ya es lazy).
 
-- Convertir `Index`, `Cookies` y `NotFound` en `React.lazy(...)` dentro de `App.tsx`, envueltos en un `<Suspense>` con un fallback ligero. Esto saca `Cookies` y `NotFound` del bundle inicial.
-- Dentro de `Index.tsx`, dejar **eager** sólo lo del hero visible (header, `KPICards`, `HeroAdoptionGlobe`, `YourCountryCard`, badges/toggles).
-- Lazy-load del resto envuelto en `<Suspense fallback={<SkeletonSection/>}>`:
-  - `WorldMap` + `FiltersBar` (chapter 01)
-  - `TreatyMatrix`, `TreatyRegionStacks`, `RegionTreatySankey` (chapter 02)
-  - `RegionComparator`, `DevelopmentEquity`, `BlocExplorer`, `RegionRanking` (chapters 03–04)
-  - `TravelRiskTool`, `CountryComparator`, `JurisdictionsTable`, `CountryDetailDrawer` (chapters 05+)
-- Opcional: usar `IntersectionObserver` para no montar las secciones hasta que estén cerca del viewport (mejora INP además del TTI).
+## 1. Partir el módulo de datos en dos
 
-## 2. Reducir el peso del dataset
+- **`src/data/jurisdictions.ts`** — solo tipos y constantes ligeras (≈ líneas 1‑124 actuales): `LawStatus`, `Era`, `Treaties`, `Jurisdiction`, `TREATY_LABELS`, `CORE_TREATIES`, `STATUS_LABEL`, `STATUS_COLOR`, `REGION_COLORS`, `ALL_REGIONS`, `ALL_ERAS`, `ALL_STATUSES`, `YEAR_MIN`, `YEAR_MAX`. Reexporta `JURISDICTIONS` desde el nuevo módulo para no romper imports existentes.
+- **`src/data/jurisdictions.data.ts`** — solo `export const JURISDICTIONS: Jurisdiction[] = [...]` (las ~11.800 líneas restantes).
 
-`src/data/jurisdictions.ts` (~12k líneas) se importa estáticamente en el hero (`KPICards`, `HeroAdoptionGlobe`, `YourCountryCard`). Opciones:
+Los 20 componentes seguirán haciendo `import { JURISDICTIONS } from "@/data/jurisdictions"`, **pero** los del hero pasarán a usar el resumen (paso 2). Como el reexport mantiene la API, ningún componente lazy se rompe.
 
-- **Mínimo invasivo:** mantener el import estático pero asegurar que sólo se importe desde componentes **lazy**, y crear un `kpiSummary.ts` precomputado (totales por status/región, número total) que use el hero. Así el JSON gigante entra sólo cuando se monta el mapa.
-- **Mayor impacto:** mover los datos a `public/jurisdictions.json` y cargarlos con `fetch` + cache de React Query la primera vez que se necesiten. El bundle JS baja drásticamente.
+## 2. Generar `kpiSummary` precomputado
 
-Recomendado: empezar por el `kpiSummary.ts` precomputado (script en `scripts/`), y dejar el JSON externo para una segunda iteración si hace falta.
+Crear `scripts/generate-kpi-summary.ts` que lee `jurisdictions.data.ts` y escribe `src/data/kpiSummary.ts` con:
 
-## 3. Diferir librerías y assets pesados
+```ts
+export const KPI_SUMMARY = {
+  total: 195,
+  byStatus: { comprehensive: 142, partial: 28, none: 25 },
+  byRegion: { /* … */ },
+  sidsNoLaw: 12,
+  // índice mínimo para el geo-IP del hero
+  byIso3: {
+    "DEU": { jurisdiction: "Germany", lawStatus: "comprehensive", keyLawName: "BDSG", keyLawYear: 2018, region: "Europe" },
+    /* … 1 línea por país */
+  },
+} as const;
+```
 
-- **Topojson del mapa** (`countries-110m.json`, ~250 KB): ya se hace `fetch` en runtime, pero se dispara al cargar Index aunque el mapa esté fuera de viewport. Mover el `fetch` dentro del componente `WorldMap` ya lazy y añadir `<link rel="preconnect" href="https://cdn.jsdelivr.net">` en `index.html`.
-- **html-to-image** y **qrcode**: sólo se usan en exports/share. Importarlos con `await import(...)` dentro del handler del botón, no en el top-level de `ExportButtons` / `CountryDetailDrawer`.
-- **recharts** y **d3-sankey**: quedan automáticamente fuera del bundle inicial al lazy-loadear los componentes que los usan (paso 1).
-- **`ipapi.co`** (geo-IP del `YourCountryCard`): el fetch falla en preview y bloquea una conexión. Envolverlo en `requestIdleCallback` / `setTimeout(…, 1500)` para no competir con el LCP.
+Engancharlo en `package.json` (`predev` / `prebuild`) junto al `generate-sitemap`. Tamaño estimado: 5‑10 KB ya minificado.
 
-## 4. Configuración de Vite y entrega de assets
+## 3. Refactor del hero para usar el resumen
 
-- Añadir `build.rollupOptions.output.manualChunks` en `vite.config.ts` para separar vendors grandes:
-  ```ts
-  manualChunks: {
-    recharts: ['recharts'],
-    d3: ['d3-sankey', 'd3-scale'],
-    maps: ['react-simple-maps'],
-    radix: [/* paquetes @radix-ui/* usados */],
-  }
-  ```
-- Activar `build.cssCodeSplit` (ya lo hace Vite por defecto, verificar) y `build.target: 'es2020'` para reducir polyfills.
-- `<link rel="preload">` para la fuente principal del hero (display font) y `font-display: swap` en `index.css` para evitar FOIT.
-- `<img>` del hero/cards con `loading="lazy"` excepto el LCP, que lleva `fetchpriority="high"`.
+- **`KPICards`** → leer totales y `byStatus` desde `KPI_SUMMARY`, sin importar `JURISDICTIONS`.
+- **`HeroAdoptionGlobe`** → recibir `total={KPI_SUMMARY.total}` desde `Index.tsx` (ya recibe `total` por prop, solo cambia la fuente).
+- **`RotatingStat`** → consumir el resumen.
+- **`YourCountryCard`** → buscar el país con `KPI_SUMMARY.byIso3[iso3]`. Al hacer click en "Ver detalle", hacer `await import("@/data/jurisdictions.data")` y resolver el `Jurisdiction` completo antes de llamar a `onSelect` (el drawer también es lazy, así que ese chunk se baja en el mismo momento de forma natural).
+- **`Index.tsx`** → reemplazar `JURISDICTIONS.length` y el cálculo de `sidsNoLaw` por `KPI_SUMMARY.total` y `KPI_SUMMARY.sidsNoLaw`. Quitar el import directo de `JURISDICTIONS` y el `useEffect` que abre país por querystring se convierte en `await import("@/data/jurisdictions.data")` dentro del effect (es one-shot, no bloquea el render).
+
+## 4. Verificación
+
+- `bunx tsc --noEmit` — sin errores de tipos.
+- Build y abrir `dist/` → confirmar que `index-*.js` ya no contiene los nombres de jurisdicciones (`grep -c "Albania" dist/assets/index-*.js` debe dar 0), y que aparecen en un chunk del mapa.
+- Smoke test en preview: hero carga, KPIs correctos, "Your Country" detecta y abre drawer, mapa y tabla siguen funcionando con `?country=DEU` y `?from=DEU&to=USA`.
 
 ## Detalles técnicos
 
 ```text
-App.tsx
- ├─ <Suspense fallback={<RouteSkeleton/>}>
- │   ├─ lazy(Index)        ──┐
- │   ├─ lazy(Cookies)        │ rutas en chunks separados
- │   └─ lazy(NotFound)      ─┘
- │
-Index.tsx (eager: hero)
- ├─ KPICards (usa kpiSummary precomputado)
- ├─ HeroAdoptionGlobe
- ├─ YourCountryCard (ipapi diferido)
- └─ <Suspense> + lazy(...) por sección
-      └─ al montar WorldMap → fetch topojson + import jurisdictions.ts
+Chunk inicial (hero)         Chunk lazy (al scrollear)
+─────────────────────        ──────────────────────────
+jurisdictions.ts (~3 KB)     jurisdictions.data.ts (~280 KB)
+kpiSummary.ts (~8 KB)        recharts / d3 / maps
+KPICards, Globe, YourCard    WorldMap, charts, tablas
 ```
 
-Métricas a vigilar antes/después con `browser--performance_profile`:
-- Transfer size del bundle inicial (`/assets/index-*.js`)
-- LCP del hero
-- Long tasks > 50 ms durante la primera interacción
+Reducción esperada del JS inicial: **−250 a −280 KB** (sin gzip).
 
 ## Fuera de alcance
 
-- Cambios de diseño, copy, traducciones.
-- SSR/SSG (sigue siendo SPA Vite).
-- Cambios en la página `/cookies` o en el footer.
+- Mover los datos a `public/jurisdictions.json` con `fetch` — más invasivo (todos los componentes pasarían a estado async). Lo dejamos para una tercera iteración solo si hace falta.
+- Cambios de UI, copy o lógica de negocio.
