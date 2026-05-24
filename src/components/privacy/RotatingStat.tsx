@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { JURISDICTIONS } from "@/data/jurisdictions";
+import { KPI_SUMMARY } from "@/data/kpiSummary";
 import { useT } from "@/i18n/LanguageContext";
 
 const useCountUp = (target: number, duration = 1100) => {
@@ -22,16 +22,18 @@ const useCountUp = (target: number, duration = 1100) => {
 
 export const RotatingStat = () => {
   const { t } = useT();
-  const stats = useMemo(() => {
-    const total = JURISDICTIONS.length;
-    const comp = JURISDICTIONS.filter((j) => j.lawStatus === "comprehensive").length;
-    const none = JURISDICTIONS.filter((j) => j.lawStatus === "none").length;
-    const dpa = JURISDICTIONS.filter((j) => j.hasDPA).length;
-    const years = JURISDICTIONS.map((j) => j.year).filter((y): y is number => !!y);
-    const pioneerYear = Math.min(...years);
-    const recentYear = Math.max(...years);
-    return { total, comp, none, dpa, pioneerYear, recentYear };
-  }, []);
+  const stats = useMemo(
+    () => ({
+      total: KPI_SUMMARY.total,
+      comp: KPI_SUMMARY.byStatus.comprehensive,
+      none: KPI_SUMMARY.byStatus.none,
+      dpa: KPI_SUMMARY.dpaCount,
+      pioneerYear: KPI_SUMMARY.pioneerYear ?? 0,
+      recentYear: KPI_SUMMARY.recentYear ?? 0,
+    }),
+    [],
+  );
+
 
   const [idx, setIdx] = useState(0);
   const [visible, setVisible] = useState(true);
