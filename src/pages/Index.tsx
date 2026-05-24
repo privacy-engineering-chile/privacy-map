@@ -1,24 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { Jurisdiction, JURISDICTIONS } from "@/data/jurisdictions";
 import { useFilters } from "@/hooks/useFilters";
 import { KPICards } from "@/components/privacy/KPICards";
-import { FiltersBar } from "@/components/privacy/FiltersBar";
-import { WorldMap } from "@/components/privacy/WorldMap";
-import { CountryDetailDrawer } from "@/components/privacy/CountryDetailDrawer";
-import { RegionComparator } from "@/components/privacy/RegionComparator";
-import { RegionRanking } from "@/components/privacy/RegionRanking";
-import { JurisdictionsTable } from "@/components/privacy/JurisdictionsTable";
-
-import { TreatyMatrix } from "@/components/privacy/TreatyMatrix";
-import { TreatyRegionStacks } from "@/components/privacy/TreatyRegionStacks";
-import { RegionTreatySankey } from "@/components/privacy/RegionTreatySankey";
-import { DevelopmentEquity } from "@/components/privacy/DevelopmentEquity";
-import { BlocExplorer } from "@/components/privacy/BlocExplorer";
 import { ChapterHeading } from "@/components/privacy/ChapterHeading";
-import { CountryComparator } from "@/components/privacy/CountryComparator";
 import { HeroAdoptionGlobe } from "@/components/privacy/HeroAdoptionGlobe";
 import { YourCountryCard } from "@/components/privacy/YourCountryCard";
-import { TravelRiskTool } from "@/components/privacy/TravelRiskTool";
 import { ThemeToggle } from "@/components/privacy/ThemeToggle";
 import { LanguageToggle } from "@/components/privacy/LanguageToggle";
 import { PrivacyBadge } from "@/components/privacy/PrivacyBadge";
@@ -29,6 +15,26 @@ import { useTheme } from "@/hooks/useTheme";
 import { useT } from "@/i18n/LanguageContext";
 import { Helmet } from "react-helmet-async";
 import { Linkedin } from "lucide-react";
+
+// Below-the-fold: code-split to keep the initial bundle small
+const FiltersBar = lazy(() => import("@/components/privacy/FiltersBar").then(m => ({ default: m.FiltersBar })));
+const WorldMap = lazy(() => import("@/components/privacy/WorldMap").then(m => ({ default: m.WorldMap })));
+const CountryDetailDrawer = lazy(() => import("@/components/privacy/CountryDetailDrawer").then(m => ({ default: m.CountryDetailDrawer })));
+const RegionComparator = lazy(() => import("@/components/privacy/RegionComparator").then(m => ({ default: m.RegionComparator })));
+const RegionRanking = lazy(() => import("@/components/privacy/RegionRanking").then(m => ({ default: m.RegionRanking })));
+const JurisdictionsTable = lazy(() => import("@/components/privacy/JurisdictionsTable").then(m => ({ default: m.JurisdictionsTable })));
+const TreatyMatrix = lazy(() => import("@/components/privacy/TreatyMatrix").then(m => ({ default: m.TreatyMatrix })));
+const TreatyRegionStacks = lazy(() => import("@/components/privacy/TreatyRegionStacks").then(m => ({ default: m.TreatyRegionStacks })));
+const RegionTreatySankey = lazy(() => import("@/components/privacy/RegionTreatySankey").then(m => ({ default: m.RegionTreatySankey })));
+const DevelopmentEquity = lazy(() => import("@/components/privacy/DevelopmentEquity").then(m => ({ default: m.DevelopmentEquity })));
+const BlocExplorer = lazy(() => import("@/components/privacy/BlocExplorer").then(m => ({ default: m.BlocExplorer })));
+const CountryComparator = lazy(() => import("@/components/privacy/CountryComparator").then(m => ({ default: m.CountryComparator })));
+const TravelRiskTool = lazy(() => import("@/components/privacy/TravelRiskTool").then(m => ({ default: m.TravelRiskTool })));
+
+const SectionFallback = () => (
+  <div className="h-72 rounded-2xl border border-border bg-card/40 animate-pulse" aria-hidden />
+);
+
 
 const Index = () => {
   const { filters, setFilters, filtered, reset } = useFilters();
