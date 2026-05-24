@@ -127,12 +127,14 @@ const Index = () => {
       <main className="container mx-auto px-4 py-8 space-y-10">
         <section className="animate-fade-up">
           <ChapterHeading number="01" title={t("ch1.title")} lead={t("ch1.lead")} accent="text-status-comprehensive" />
-          <div className="rounded-2xl border border-border bg-card/60 backdrop-blur-sm overflow-hidden shadow-soft">
-            <div className="border-b border-border bg-background/60">
-              <FiltersBar filters={filters} setFilters={setFilters} reset={reset} />
+          <Suspense fallback={<SectionFallback />}>
+            <div className="rounded-2xl border border-border bg-card/60 backdrop-blur-sm overflow-hidden shadow-soft">
+              <div className="border-b border-border bg-background/60">
+                <FiltersBar filters={filters} setFilters={setFilters} reset={reset} />
+              </div>
+              <WorldMap ref={mapRef} filtered={filtered} filters={filters} onSelect={setSelected} selected={selected} />
             </div>
-            <WorldMap ref={mapRef} filtered={filtered} filters={filters} onSelect={setSelected} selected={selected} />
-          </div>
+          </Suspense>
           {sidsNoLaw > 0 && (
             <div className="mt-3 inline-flex items-center gap-2 text-xs px-3 py-1.5 rounded-full bg-status-none/10 text-status-none border border-status-none/30">
               <span className="h-1.5 w-1.5 rounded-full bg-status-none" />
@@ -143,40 +145,51 @@ const Index = () => {
 
         <section className="animate-fade-up">
           <ChapterHeading number="02" title={t("ch2.title")} lead={t("ch2.lead")} accent="text-status-treaty" />
-          <div className="space-y-6">
-            <TreatyMatrix data={filtered} onSelect={setSelected} />
-            <TreatyRegionStacks data={filtered} />
-            <RegionTreatySankey data={filtered} />
-          </div>
+          <Suspense fallback={<SectionFallback />}>
+            <div className="space-y-6">
+              <TreatyMatrix data={filtered} onSelect={setSelected} />
+              <TreatyRegionStacks data={filtered} />
+              <RegionTreatySankey data={filtered} />
+            </div>
+          </Suspense>
         </section>
 
         <section className="animate-fade-up">
           <ChapterHeading number="03" title={t("ch3.title")} lead={t("ch3.lead")} accent="text-accent" />
-          <RegionComparator data={filtered} />
+          <Suspense fallback={<SectionFallback />}>
+            <RegionComparator data={filtered} />
+          </Suspense>
         </section>
 
         <section className="animate-fade-up">
           <ChapterHeading number="04" title={t("ch4.title")} lead={t("ch4.lead")} accent="text-region-africa" />
-          <div className="grid lg:grid-cols-2 gap-6">
-            <DevelopmentEquity data={filtered} />
-            <BlocExplorer data={filtered} onSelect={setSelected} />
-          </div>
-          <div className="mt-6">
-            <RegionRanking data={filtered} />
-          </div>
+          <Suspense fallback={<SectionFallback />}>
+            <div className="grid lg:grid-cols-2 gap-6">
+              <DevelopmentEquity data={filtered} />
+              <BlocExplorer data={filtered} onSelect={setSelected} />
+            </div>
+            <div className="mt-6">
+              <RegionRanking data={filtered} />
+            </div>
+          </Suspense>
         </section>
 
         <section className="animate-fade-up">
-          <TravelRiskTool />
+          <Suspense fallback={<SectionFallback />}>
+            <TravelRiskTool />
+          </Suspense>
         </section>
 
         <section className="animate-fade-up">
           <ChapterHeading number="05" title={t("ch5.title")} lead={t("ch5.lead")} accent="text-primary" />
-          <div className="mb-6">
-            <CountryComparator onSelect={setSelected} />
-          </div>
-          <JurisdictionsTable data={filtered} onSelect={setSelected} />
+          <Suspense fallback={<SectionFallback />}>
+            <div className="mb-6">
+              <CountryComparator onSelect={setSelected} />
+            </div>
+            <JurisdictionsTable data={filtered} onSelect={setSelected} />
+          </Suspense>
         </section>
+
 
         <footer className="text-center text-xs text-muted-foreground py-10 space-y-2 border-t border-border">
           <div>
