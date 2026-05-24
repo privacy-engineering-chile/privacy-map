@@ -1,9 +1,9 @@
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
-import { Jurisdiction, JURISDICTIONS } from "@/data/jurisdictions";
+import type { Jurisdiction } from "@/data/jurisdictions";
+import { KPI_SUMMARY } from "@/data/kpiSummary";
 import { useFilters } from "@/hooks/useFilters";
 import { KPICards } from "@/components/privacy/KPICards";
 import { ChapterHeading } from "@/components/privacy/ChapterHeading";
-import { HeroAdoptionGlobe } from "@/components/privacy/HeroAdoptionGlobe";
 import { YourCountryCard } from "@/components/privacy/YourCountryCard";
 import { ThemeToggle } from "@/components/privacy/ThemeToggle";
 import { LanguageToggle } from "@/components/privacy/LanguageToggle";
