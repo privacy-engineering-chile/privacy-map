@@ -1,5 +1,4 @@
 import { RefObject, useState } from "react";
-import { toPng } from "html-to-image";
 import { Button } from "@/components/ui/button";
 import { Camera, Link2, Check } from "lucide-react";
 import { useT } from "@/i18n/LanguageContext";
@@ -10,6 +9,7 @@ export const ExportButtons = ({ mapRef }: { mapRef: RefObject<HTMLDivElement> })
 
   const exportPNG = async () => {
     if (!mapRef.current) return;
+    const { toPng } = await import("html-to-image");
     const url = await toPng(mapRef.current, { cacheBust: true, pixelRatio: 2, backgroundColor: "#ffffff" });
     const a = document.createElement("a");
     a.href = url;

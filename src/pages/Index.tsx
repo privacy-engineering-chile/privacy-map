@@ -1,24 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { Jurisdiction, JURISDICTIONS } from "@/data/jurisdictions";
 import { useFilters } from "@/hooks/useFilters";
 import { KPICards } from "@/components/privacy/KPICards";
-import { FiltersBar } from "@/components/privacy/FiltersBar";
-import { WorldMap } from "@/components/privacy/WorldMap";
-import { CountryDetailDrawer } from "@/components/privacy/CountryDetailDrawer";
-import { RegionComparator } from "@/components/privacy/RegionComparator";
-import { RegionRanking } from "@/components/privacy/RegionRanking";
-import { JurisdictionsTable } from "@/components/privacy/JurisdictionsTable";
-
-import { TreatyMatrix } from "@/components/privacy/TreatyMatrix";
-import { TreatyRegionStacks } from "@/components/privacy/TreatyRegionStacks";
-import { RegionTreatySankey } from "@/components/privacy/RegionTreatySankey";
-import { DevelopmentEquity } from "@/components/privacy/DevelopmentEquity";
-import { BlocExplorer } from "@/components/privacy/BlocExplorer";
 import { ChapterHeading } from "@/components/privacy/ChapterHeading";
-import { CountryComparator } from "@/components/privacy/CountryComparator";
 import { HeroAdoptionGlobe } from "@/components/privacy/HeroAdoptionGlobe";
 import { YourCountryCard } from "@/components/privacy/YourCountryCard";
-import { TravelRiskTool } from "@/components/privacy/TravelRiskTool";
 import { ThemeToggle } from "@/components/privacy/ThemeToggle";
 import { LanguageToggle } from "@/components/privacy/LanguageToggle";
 import { PrivacyBadge } from "@/components/privacy/PrivacyBadge";
@@ -29,6 +15,26 @@ import { useTheme } from "@/hooks/useTheme";
 import { useT } from "@/i18n/LanguageContext";
 import { Helmet } from "react-helmet-async";
 import { Linkedin } from "lucide-react";
+
+// Below-the-fold: code-split to keep the initial bundle small
+const FiltersBar = lazy(() => import("@/components/privacy/FiltersBar").then(m => ({ default: m.FiltersBar })));
+const WorldMap = lazy(() => import("@/components/privacy/WorldMap").then(m => ({ default: m.WorldMap })));
+const CountryDetailDrawer = lazy(() => import("@/components/privacy/CountryDetailDrawer").then(m => ({ default: m.CountryDetailDrawer })));
+const RegionComparator = lazy(() => import("@/components/privacy/RegionComparator").then(m => ({ default: m.RegionComparator })));
+const RegionRanking = lazy(() => import("@/components/privacy/RegionRanking").then(m => ({ default: m.RegionRanking })));
+const JurisdictionsTable = lazy(() => import("@/components/privacy/JurisdictionsTable").then(m => ({ default: m.JurisdictionsTable })));
+const TreatyMatrix = lazy(() => import("@/components/privacy/TreatyMatrix").then(m => ({ default: m.TreatyMatrix })));
+const TreatyRegionStacks = lazy(() => import("@/components/privacy/TreatyRegionStacks").then(m => ({ default: m.TreatyRegionStacks })));
+const RegionTreatySankey = lazy(() => import("@/components/privacy/RegionTreatySankey").then(m => ({ default: m.RegionTreatySankey })));
+const DevelopmentEquity = lazy(() => import("@/components/privacy/DevelopmentEquity").then(m => ({ default: m.DevelopmentEquity })));
+const BlocExplorer = lazy(() => import("@/components/privacy/BlocExplorer").then(m => ({ default: m.BlocExplorer })));
+const CountryComparator = lazy(() => import("@/components/privacy/CountryComparator").then(m => ({ default: m.CountryComparator })));
+const TravelRiskTool = lazy(() => import("@/components/privacy/TravelRiskTool").then(m => ({ default: m.TravelRiskTool })));
+
+const SectionFallback = () => (
+  <div className="h-72 rounded-2xl border border-border bg-card/40 animate-pulse" aria-hidden />
+);
+
 
 const Index = () => {
   const { filters, setFilters, filtered, reset } = useFilters();
@@ -121,12 +127,14 @@ const Index = () => {
       <main className="container mx-auto px-4 py-8 space-y-10">
         <section className="animate-fade-up">
           <ChapterHeading number="01" title={t("ch1.title")} lead={t("ch1.lead")} accent="text-status-comprehensive" />
-          <div className="rounded-2xl border border-border bg-card/60 backdrop-blur-sm overflow-hidden shadow-soft">
-            <div className="border-b border-border bg-background/60">
-              <FiltersBar filters={filters} setFilters={setFilters} reset={reset} />
+          <Suspense fallback={<SectionFallback />}>
+            <div className="rounded-2xl border border-border bg-card/60 backdrop-blur-sm overflow-hidden shadow-soft">
+              <div className="border-b border-border bg-background/60">
+                <FiltersBar filters={filters} setFilters={setFilters} reset={reset} />
+              </div>
+              <WorldMap ref={mapRef} filtered={filtered} filters={filters} onSelect={setSelected} selected={selected} />
             </div>
-            <WorldMap ref={mapRef} filtered={filtered} filters={filters} onSelect={setSelected} selected={selected} />
-          </div>
+          </Suspense>
           {sidsNoLaw > 0 && (
             <div className="mt-3 inline-flex items-center gap-2 text-xs px-3 py-1.5 rounded-full bg-status-none/10 text-status-none border border-status-none/30">
               <span className="h-1.5 w-1.5 rounded-full bg-status-none" />
@@ -137,40 +145,51 @@ const Index = () => {
 
         <section className="animate-fade-up">
           <ChapterHeading number="02" title={t("ch2.title")} lead={t("ch2.lead")} accent="text-status-treaty" />
-          <div className="space-y-6">
-            <TreatyMatrix data={filtered} onSelect={setSelected} />
-            <TreatyRegionStacks data={filtered} />
-            <RegionTreatySankey data={filtered} />
-          </div>
+          <Suspense fallback={<SectionFallback />}>
+            <div className="space-y-6">
+              <TreatyMatrix data={filtered} onSelect={setSelected} />
+              <TreatyRegionStacks data={filtered} />
+              <RegionTreatySankey data={filtered} />
+            </div>
+          </Suspense>
         </section>
 
         <section className="animate-fade-up">
           <ChapterHeading number="03" title={t("ch3.title")} lead={t("ch3.lead")} accent="text-accent" />
-          <RegionComparator data={filtered} />
+          <Suspense fallback={<SectionFallback />}>
+            <RegionComparator data={filtered} />
+          </Suspense>
         </section>
 
         <section className="animate-fade-up">
           <ChapterHeading number="04" title={t("ch4.title")} lead={t("ch4.lead")} accent="text-region-africa" />
-          <div className="grid lg:grid-cols-2 gap-6">
-            <DevelopmentEquity data={filtered} />
-            <BlocExplorer data={filtered} onSelect={setSelected} />
-          </div>
-          <div className="mt-6">
-            <RegionRanking data={filtered} />
-          </div>
+          <Suspense fallback={<SectionFallback />}>
+            <div className="grid lg:grid-cols-2 gap-6">
+              <DevelopmentEquity data={filtered} />
+              <BlocExplorer data={filtered} onSelect={setSelected} />
+            </div>
+            <div className="mt-6">
+              <RegionRanking data={filtered} />
+            </div>
+          </Suspense>
         </section>
 
         <section className="animate-fade-up">
-          <TravelRiskTool />
+          <Suspense fallback={<SectionFallback />}>
+            <TravelRiskTool />
+          </Suspense>
         </section>
 
         <section className="animate-fade-up">
           <ChapterHeading number="05" title={t("ch5.title")} lead={t("ch5.lead")} accent="text-primary" />
-          <div className="mb-6">
-            <CountryComparator onSelect={setSelected} />
-          </div>
-          <JurisdictionsTable data={filtered} onSelect={setSelected} />
+          <Suspense fallback={<SectionFallback />}>
+            <div className="mb-6">
+              <CountryComparator onSelect={setSelected} />
+            </div>
+            <JurisdictionsTable data={filtered} onSelect={setSelected} />
+          </Suspense>
         </section>
+
 
         <footer className="text-center text-xs text-muted-foreground py-10 space-y-2 border-t border-border">
           <div>
@@ -193,7 +212,11 @@ const Index = () => {
         </footer>
       </main>
 
-      <CountryDetailDrawer country={selected} onClose={() => setSelected(null)} />
+      {selected && (
+        <Suspense fallback={null}>
+          <CountryDetailDrawer country={selected} onClose={() => setSelected(null)} />
+        </Suspense>
+      )}
     </div>
   );
 };
