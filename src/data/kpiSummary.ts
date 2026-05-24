@@ -14,6 +14,10 @@ export const KPI_SUMMARY: {
   byStatus: Record<LawStatus, number>;
   byRegion: Record<string, number>;
   sidsNoLaw: number;
+  dpaCount: number;
+  pioneerYear: number | null;
+  recentYear: number | null;
+  pioneer: { jurisdiction: string; firstLawYear: number | null } | null;
   byIso3: Record<string, KpiSummaryEntry>;
 } = {
   "total": 252,
@@ -31,6 +35,13 @@ export const KPI_SUMMARY: {
     "Oceania": 29
   },
   "sidsNoLaw": 33,
+  "dpaCount": 171,
+  "pioneerYear": 1974,
+  "recentYear": 2024,
+  "pioneer": {
+    "jurisdiction": "Sweden",
+    "firstLawYear": 1973
+  },
   "byIso3": {
     "AFG": {
       "jurisdiction": "Afghanistan",
