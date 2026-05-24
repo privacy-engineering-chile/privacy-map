@@ -4,7 +4,7 @@ import {
   ALL_REGIONS,
   ALL_STATUSES,
   Era,
-  JURISDICTIONS,
+  Jurisdiction,
   LawStatus,
   Treaties,
   YEAR_MAX,
