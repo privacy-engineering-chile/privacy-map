@@ -17,6 +17,7 @@ import { Helmet } from "react-helmet-async";
 import { Linkedin } from "lucide-react";
 
 // Below-the-fold: code-split to keep the initial bundle small
+const HeroAdoptionGlobe = lazy(() => import("@/components/privacy/HeroAdoptionGlobe").then(m => ({ default: m.HeroAdoptionGlobe })));
 const FiltersBar = lazy(() => import("@/components/privacy/FiltersBar").then(m => ({ default: m.FiltersBar })));
 const WorldMap = lazy(() => import("@/components/privacy/WorldMap").then(m => ({ default: m.WorldMap })));
 const CountryDetailDrawer = lazy(() => import("@/components/privacy/CountryDetailDrawer").then(m => ({ default: m.CountryDetailDrawer })));
