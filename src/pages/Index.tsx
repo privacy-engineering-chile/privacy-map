@@ -212,7 +212,11 @@ const Index = () => {
         </footer>
       </main>
 
-      <CountryDetailDrawer country={selected} onClose={() => setSelected(null)} />
+      {selected && (
+        <Suspense fallback={null}>
+          <CountryDetailDrawer country={selected} onClose={() => setSelected(null)} />
+        </Suspense>
+      )}
     </div>
   );
 };
