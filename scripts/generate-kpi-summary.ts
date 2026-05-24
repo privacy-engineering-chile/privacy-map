@@ -75,6 +75,9 @@ export const KPI_SUMMARY: {
   byStatus: Record<LawStatus, number>;
   byRegion: Record<string, number>;
   sidsNoLaw: number;
+  dpaCount: number;
+  pioneerYear: number | null;
+  recentYear: number | null;
   pioneer: { jurisdiction: string; firstLawYear: number | null } | null;
   byIso3: Record<string, KpiSummaryEntry>;
 } = ${JSON.stringify(summary, null, 2)};
