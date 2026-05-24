@@ -9,6 +9,9 @@ const byStatus = Object.fromEntries(ALL_STATUSES.map((s) => [s, 0])) as Record<
 >;
 const byRegion = Object.fromEntries(ALL_REGIONS.map((r) => [r, 0])) as Record<string, number>;
 let sidsNoLaw = 0;
+let dpaCount = 0;
+let pioneerYear = Infinity;
+let recentYear = -Infinity;
 const byIso3: Record<string, {
   jurisdiction: string;
   region: string;
