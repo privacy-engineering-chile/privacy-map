@@ -24,6 +24,11 @@ for (const j of JURISDICTIONS) {
   byStatus[j.lawStatus] = (byStatus[j.lawStatus] ?? 0) + 1;
   byRegion[j.region] = (byRegion[j.region] ?? 0) + 1;
   if (j.sids && j.lawStatus === "none") sidsNoLaw++;
+  if (j.hasDPA) dpaCount++;
+  if (j.year) {
+    if (j.year < pioneerYear) pioneerYear = j.year;
+    if (j.year > recentYear) recentYear = j.year;
+  }
   if (j.iso3) {
     byIso3[j.iso3] = {
       jurisdiction: j.jurisdiction,
