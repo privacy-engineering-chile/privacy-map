@@ -32,11 +32,19 @@ for (const j of JURISDICTIONS) {
   }
 }
 
+const pioneerJ = [...JURISDICTIONS]
+  .filter((j) => j.firstLawYear)
+  .sort((a, b) => (a.firstLawYear ?? 9999) - (b.firstLawYear ?? 9999))[0];
+const pioneer = pioneerJ
+  ? { jurisdiction: pioneerJ.jurisdiction, firstLawYear: pioneerJ.firstLawYear }
+  : null;
+
 const summary = {
   total: JURISDICTIONS.length,
   byStatus,
   byRegion,
   sidsNoLaw,
+  pioneer,
   byIso3,
 };
 
