@@ -56,14 +56,19 @@ const Index = () => {
   useEffect(() => {
     const p = new URLSearchParams(window.location.search);
     const iso = p.get("country");
-    if (iso) {
-      const found = JURISDICTIONS.find((j) => j.iso3 === iso);
+    if (!iso) return;
+    let cancelled = false;
+    import("@/data/jurisdictions.data").then((m) => {
+      if (cancelled) return;
+      const found = m.JURISDICTIONS.find((j) => j.iso3 === iso);
       if (found) setSelected(found);
-    }
+    });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  const sidsNoLaw = JURISDICTIONS.filter((j) => j.sids && j.lawStatus === "none").length;
-  const noneTotal = JURISDICTIONS.filter((j) => j.lawStatus === "none").length;
+  const sidsNoLaw = KPI_SUMMARY.sidsNoLaw;
 
   return (
     <div className="min-h-screen bg-background">
