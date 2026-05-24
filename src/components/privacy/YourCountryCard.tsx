@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { JURISDICTIONS, Jurisdiction, STATUS_COLOR, STATUS_LABEL } from "@/data/jurisdictions";
+import { Jurisdiction, LawStatus, STATUS_COLOR, STATUS_LABEL } from "@/data/jurisdictions";
+import { KPI_SUMMARY, KpiSummaryEntry } from "@/data/kpiSummary";
 import { ISO2_TO_ISO3, isoToFlag } from "@/lib/iso2to3";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -12,10 +13,15 @@ interface Props {
 
 const SESSION_KEY = "privacy-atlas-yourcountry-dismissed";
 
+interface Detected {
+  iso3: string;
+  iso2: string;
+  entry: KpiSummaryEntry;
+}
+
 export const YourCountryCard = ({ onSelect }: Props) => {
   const { t } = useT();
-  const [country, setCountry] = useState<Jurisdiction | null>(null);
-  const [iso2, setIso2] = useState<string>("");
+  const [detected, setDetected] = useState<Detected | null>(null);
   const [dismissed, setDismissed] = useState<boolean>(() =>
     typeof window !== "undefined" && sessionStorage.getItem(SESSION_KEY) === "1",
   );
@@ -34,16 +40,16 @@ export const YourCountryCard = ({ onSelect }: Props) => {
           const code3 = d.country_code_iso3 as string | undefined;
           const iso3 = code3 || (code2 ? ISO2_TO_ISO3[code2] : undefined);
           if (!iso3) return;
-          const found = JURISDICTIONS.find((j) => j.iso3 === iso3);
-          if (found) {
-            setCountry(found);
-            setIso2(code2 ?? "");
+          const entry = KPI_SUMMARY.byIso3[iso3];
+          if (entry) {
+            setDetected({ iso3, iso2: code2 ?? "", entry });
           }
         })
         .catch(() => {});
     };
-    // Defer to idle so it never competes with LCP
-    const ric = (window as any).requestIdleCallback as undefined | ((cb: () => void, opts?: { timeout: number }) => number);
+    const ric = (window as any).requestIdleCallback as
+      | undefined
+      | ((cb: () => void, opts?: { timeout: number }) => number);
     const handle = ric ? ric(run, { timeout: 2500 }) : window.setTimeout(run, 1500);
     return () => {
       cancelled = true;
@@ -54,13 +60,23 @@ export const YourCountryCard = ({ onSelect }: Props) => {
     };
   }, [dismissed]);
 
-
   const dismiss = () => {
     sessionStorage.setItem(SESSION_KEY, "1");
     setDismissed(true);
   };
 
-  if (dismissed || !country) return null;
+  const open = async () => {
+    if (!detected) return;
+    // Lazy-load the full dataset only when the user explicitly opens the drawer
+    const { JURISDICTIONS } = await import("@/data/jurisdictions.data");
+    const full = JURISDICTIONS.find((j) => j.iso3 === detected.iso3);
+    if (full) onSelect(full);
+  };
+
+  if (dismissed || !detected) return null;
+
+  const { entry, iso2 } = detected;
+  const lawStatus = entry.lawStatus as LawStatus;
 
   return (
     <Card className="w-full p-6 shadow-pop border-accent/30 bg-card/95 backdrop-blur animate-fade-up relative">
@@ -77,25 +93,21 @@ export const YourCountryCard = ({ onSelect }: Props) => {
       <div className="flex items-center gap-3 mt-3">
         <span className="text-5xl">{isoToFlag(iso2)}</span>
         <div>
-          <div className="font-display text-2xl font-bold leading-tight">{country.jurisdiction}</div>
+          <div className="font-display text-2xl font-bold leading-tight">{entry.jurisdiction}</div>
           <div
             className="inline-block text-xs px-2 py-0.5 rounded text-white font-medium mt-1"
-            style={{ background: STATUS_COLOR[country.lawStatus] }}
+            style={{ background: STATUS_COLOR[lawStatus] }}
           >
-            {STATUS_LABEL[country.lawStatus]}
+            {STATUS_LABEL[lawStatus]}
           </div>
         </div>
       </div>
-      {country.keyLawName && (
+      {entry.keyLawName && (
         <div className="mt-3 text-sm text-muted-foreground line-clamp-2">
-          {country.keyLawName} {country.keyLawYear && `· ${country.keyLawYear}`}
+          {entry.keyLawName} {entry.keyLawYear && `· ${entry.keyLawYear}`}
         </div>
       )}
-      <Button
-        size="default"
-        className="w-full mt-4"
-        onClick={() => onSelect(country)}
-      >
+      <Button size="default" className="w-full mt-4" onClick={open}>
         {t("you.viewDetail")}
       </Button>
     </Card>
