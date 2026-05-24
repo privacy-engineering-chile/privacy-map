@@ -23,25 +23,37 @@ export const YourCountryCard = ({ onSelect }: Props) => {
   useEffect(() => {
     if (dismissed) return;
     let cancelled = false;
-    fetch("https://ipapi.co/json/")
-      .then((r) => (r.ok ? r.json() : null))
-      .then((d) => {
-        if (cancelled || !d) return;
-        const code2 = d.country_code as string | undefined;
-        const code3 = d.country_code_iso3 as string | undefined;
-        const iso3 = code3 || (code2 ? ISO2_TO_ISO3[code2] : undefined);
-        if (!iso3) return;
-        const found = JURISDICTIONS.find((j) => j.iso3 === iso3);
-        if (found) {
-          setCountry(found);
-          setIso2(code2 ?? "");
-        }
-      })
-      .catch(() => {});
+    const controller = new AbortController();
+    const run = () => {
+      if (cancelled) return;
+      fetch("https://ipapi.co/json/", { signal: controller.signal })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((d) => {
+          if (cancelled || !d) return;
+          const code2 = d.country_code as string | undefined;
+          const code3 = d.country_code_iso3 as string | undefined;
+          const iso3 = code3 || (code2 ? ISO2_TO_ISO3[code2] : undefined);
+          if (!iso3) return;
+          const found = JURISDICTIONS.find((j) => j.iso3 === iso3);
+          if (found) {
+            setCountry(found);
+            setIso2(code2 ?? "");
+          }
+        })
+        .catch(() => {});
+    };
+    // Defer to idle so it never competes with LCP
+    const ric = (window as any).requestIdleCallback as undefined | ((cb: () => void, opts?: { timeout: number }) => number);
+    const handle = ric ? ric(run, { timeout: 2500 }) : window.setTimeout(run, 1500);
     return () => {
       cancelled = true;
+      controller.abort();
+      const cic = (window as any).cancelIdleCallback as undefined | ((h: number) => void);
+      if (ric && cic) cic(handle as number);
+      else window.clearTimeout(handle as number);
     };
   }, [dismissed]);
+
 
   const dismiss = () => {
     sessionStorage.setItem(SESSION_KEY, "1");
