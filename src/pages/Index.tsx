@@ -116,7 +116,9 @@ const Index = () => {
           </div>
 
           <div className="mt-8">
-            <HeroAdoptionGlobe total={JURISDICTIONS.length} />
+            <Suspense fallback={<div className="h-[420px] rounded-2xl bg-card/40 border border-border/50 animate-pulse" aria-hidden />}>
+              <HeroAdoptionGlobe total={KPI_SUMMARY.total} />
+            </Suspense>
           </div>
 
           <button
